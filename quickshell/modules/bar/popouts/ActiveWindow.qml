@@ -191,15 +191,6 @@ Item {
                 anchors.right: parent.right
                 implicitHeight: desktopRow.implicitHeight
 
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    height: 1
-                    color: Colours.palette.m3OutlineVariant
-                    visible: index === 0
-                }
-
                 StateLayer {
                     anchors.fill: parent
                     radius: Tokens.rounding.small
