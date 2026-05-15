@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+import json
+import subprocess
+import os
+import time
+
+STATE_FILE = "/tmp/caelestia-show-desktop.json"
+
+def hyprctl(*args):
+    subprocess.run(["hyprctl"] + list(args), capture_output=True)
+
+def get_json(cmd):
+    return json.loads(subprocess.run(["hyprctl", cmd, "-j"], capture_output=True, text=True).stdout)
+
+def show_desktop():
+    active = get_json("activeworkspace")
+    ws_id = active["id"]
+
+    clients = get_json("clients")
+    windows = [(c["address"], ws_id) for c in clients if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]]
+
+    if windows:
+        cmds = [f"dispatch movetoworkspace special:desktop,address:{addr}" for addr, _ in windows]
+        hyprctl("--batch", ";".join(cmds))
+
+        with open(STATE_FILE, "w") as f:
+            json.dump({"windows": windows, "workspace": ws_id}, f)
+
+        time.sleep(0.2)
+
+    # Switch to the special workspace
+    hyprctl("dispatch", "workspace", "special:desktop")
+
+def restore():
+    if not os.path.exists(STATE_FILE):
+        return
+
+    with open(STATE_FILE) as f:
+        state = json.load(f)
+
+    windows = state.get("windows", [])
+    ws_id = state.get("workspace", 1)
+
+    os.remove(STATE_FILE)
+
+    # Move windows back
+    if windows:
+        cmds = [f"dispatch movetoworkspace {ws_id},address:{addr}" for addr, _ in windows]
+        hyprctl("--batch", ";".join(cmds))
+        time.sleep(0.2)
+
+    # Switch back to original workspace
+    hyprctl("dispatch", "workspace", str(ws_id))
+
+if __name__ == "__main__":
+    if os.path.exists(STATE_FILE):
+        restore()
+    else:
+        show_desktop()

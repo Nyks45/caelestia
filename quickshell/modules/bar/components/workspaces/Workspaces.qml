@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import Caelestia.Config
 import qs.components
 import qs.services
@@ -15,6 +16,7 @@ StyledClippingRect {
     required property bool fullscreen
 
     readonly property bool onSpecial: (GlobalConfig.bar.workspaces.perMonitorWorkspaces ? Hypr.monitorFor(screen) : Hypr.focusedMonitor)?.lastIpcObject.specialWorkspace?.name !== ""
+    readonly property bool showDesktopActive: onSpecial && (GlobalConfig.bar.workspaces.perMonitorWorkspaces ? Hypr.monitorFor(screen) : Hypr.focusedMonitor)?.lastIpcObject.specialWorkspace?.name === "special:desktop"
     readonly property int activeWsId: GlobalConfig.bar.workspaces.perMonitorWorkspaces ? (Hypr.monitorFor(screen).activeWorkspace?.id ?? 1) : Hypr.activeWsId
 
     readonly property var occupied: {
@@ -25,18 +27,18 @@ StyledClippingRect {
     }
     readonly property int groupOffset: Math.floor((activeWsId - 1) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
 
-    property real blur: onSpecial ? 1 : 0
+    property real blur: onSpecial && !showDesktopActive ? 1 : 0
 
     implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: layout.implicitHeight + Tokens.padding.small * 2
+    implicitHeight: layout.implicitHeight + Tokens.padding.small * 2 + (showDesktopButton.visible ? showDesktopButton.implicitHeight + Math.floor(Tokens.spacing.small / 2) : 0)
 
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
 
     Item {
         anchors.fill: parent
-        scale: root.onSpecial ? 0.8 : 1
-        opacity: root.onSpecial ? 0.5 : 1
+        scale: root.onSpecial && !root.showDesktopActive ? 0.8 : 1
+        opacity: root.onSpecial && !root.showDesktopActive ? 0.5 : 1
         visible: !root.fullscreen
 
         layer.enabled: root.blur > 0
@@ -104,23 +106,29 @@ StyledClippingRect {
         }
 
         Item {
+            id: showDesktopButton
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: layout.bottom
             anchors.topMargin: Math.floor(Tokens.spacing.small / 2)
             implicitWidth: desktopIcon.implicitHeight + Tokens.padding.small * 2
             implicitHeight: desktopIcon.implicitHeight + Tokens.padding.small * 2
 
-            StateLayer {
-                anchors.fill: parent
-                radius: Tokens.rounding.full
-                hoverEnabled: true
-                onClicked: Hypr.dispatch("togglespecialworkspace desktop")
-            }
+                StateLayer {
+                    anchors.fill: parent
+                    radius: Tokens.rounding.full
+                    hoverEnabled: true
+                    onClicked: showDesktopProc.running = true
+                }
+
+                Process {
+                    id: showDesktopProc
+                    command: ["/home/hakan/.local/bin/hypr-show-desktop"]
+                }
 
             MaterialIcon {
                 id: desktopIcon
                 anchors.centerIn: parent
-                text: "desktop_windows"
+                text: root.showDesktopActive ? "grid_view" : "desktop_windows"
                 font.pointSize: Tokens.font.size.small
                 color: Colours.palette.m3onSurfaceVariant
             }
@@ -143,10 +151,10 @@ StyledClippingRect {
         anchors.fill: parent
         anchors.margins: Tokens.padding.small
 
-        active: opacity > 0
+        active: opacity > 0 && !root.showDesktopActive
 
-        scale: root.onSpecial ? 1 : 0.5
-        opacity: root.onSpecial ? 1 : 0
+        scale: root.onSpecial && !root.showDesktopActive ? 1 : 0.5
+        opacity: root.onSpecial && !root.showDesktopActive ? 1 : 0
 
         sourceComponent: SpecialWorkspaces {
             screen: root.screen
