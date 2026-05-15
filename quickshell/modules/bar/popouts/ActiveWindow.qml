@@ -22,19 +22,11 @@ Item {
 
     Process {
         id: clientProc
-        command: ["hyprctl", "clients", "-j"]
+        command: ["cat", "/tmp/caelestia-desktop-windows.json"]
         stdout: StdioCollector {
             onStreamFinished: {
-                try {
-                    const data = JSON.parse(text);
-                    const dw = [];
-                    for (const c of data) {
-                        if (c.workspace?.name === "desktop" && c.mapped) {
-                            dw.push(c);
-                        }
-                    }
-                    root.desktopWindows = dw;
-                } catch (e) {}
+                try { root.desktopWindows = JSON.parse(text); }
+                catch (e) { root.desktopWindows = []; }
             }
         }
     }
@@ -196,8 +188,8 @@ Item {
                     radius: Tokens.rounding.small
                     z: 0
                     onClicked: {
-                        Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:" + win.address);
-                        Hypr.dispatch("focuswindow address:" + win.address);
+                        Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + win.address);
+                        Hypr.dispatch("focuswindow address:0x" + win.address);
                         root.popouts.hasCurrent = false;
                     }
                 }

@@ -33,6 +33,18 @@ def show_desktop():
     with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
         json.dump(mapping, f)
 
+    # Write window details for the popout window list
+    popout_windows = []
+    for c in clients:
+        if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]:
+            popout_windows.append({
+                "address": c["address"].replace("0x", ""),
+                "title": c.get("title", ""),
+                "class": c.get("class", "")
+            })
+    with open("/tmp/caelestia-desktop-windows.json", "w") as f:
+        json.dump(popout_windows, f)
+
 def restore():
     if not os.path.exists(STATE_FILE):
         return
@@ -44,8 +56,9 @@ def restore():
     ws_id = state.get("workspace", 1)
 
     os.remove(STATE_FILE)
-    if os.path.exists("/tmp/caelestia-desktop-mapping.json"):
-        os.remove("/tmp/caelestia-desktop-mapping.json")
+    for f in ["/tmp/caelestia-desktop-mapping.json", "/tmp/caelestia-desktop-windows.json"]:
+        if os.path.exists(f):
+            os.remove(f)
 
     if not windows:
         return
