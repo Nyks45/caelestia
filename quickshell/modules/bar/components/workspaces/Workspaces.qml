@@ -77,26 +77,6 @@ StyledClippingRect {
                     groupOffset: root.groupOffset
                 }
             }
-
-            Item {
-                implicitWidth: showDesktopIcon.implicitHeight
-                implicitHeight: showDesktopIcon.implicitHeight
-
-                StateLayer {
-                    anchors.fill: parent
-                    radius: Tokens.rounding.full
-                    hoverEnabled: true
-                    onClicked: Hypr.dispatch("togglespecialworkspace desktop")
-                }
-
-                MaterialIcon {
-                    id: showDesktopIcon
-                    anchors.centerIn: parent
-                    text: "desktop_windows"
-                    font.pointSize: Tokens.font.size.small
-                    color: Colours.palette.m3onSurfaceVariant
-                }
-            }
         }
 
         Loader {
@@ -120,6 +100,29 @@ StyledClippingRect {
                     Hypr.dispatch(`workspace ${ws}`);
                 else
                     Hypr.dispatch("togglespecialworkspace special");
+            }
+        }
+
+        Item {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: layout.bottom
+            anchors.topMargin: Math.floor(Tokens.spacing.small / 2)
+            implicitWidth: desktopIcon.implicitHeight + Tokens.padding.small * 2
+            implicitHeight: desktopIcon.implicitHeight + Tokens.padding.small * 2
+
+            StateLayer {
+                anchors.fill: parent
+                radius: Tokens.rounding.full
+                hoverEnabled: true
+                onClicked: Hypr.dispatch("togglespecialworkspace desktop")
+            }
+
+            MaterialIcon {
+                id: desktopIcon
+                anchors.centerIn: parent
+                text: "desktop_windows"
+                font.pointSize: Tokens.font.size.small
+                color: Colours.palette.m3onSurfaceVariant
             }
         }
 
