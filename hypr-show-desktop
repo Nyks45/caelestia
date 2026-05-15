@@ -28,6 +28,11 @@ def show_desktop():
     with open(STATE_FILE, "w") as f:
         json.dump({"windows": windows, "workspace": ws_id}, f)
 
+    # Write address → original workspace mapping for workspace dot icons
+    mapping = {addr.replace("0x", ""): str(ws_id) for addr, ws_id in windows}
+    with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
+        json.dump(mapping, f)
+
 def restore():
     if not os.path.exists(STATE_FILE):
         return
@@ -39,6 +44,8 @@ def restore():
     ws_id = state.get("workspace", 1)
 
     os.remove(STATE_FILE)
+    if os.path.exists("/tmp/caelestia-desktop-mapping.json"):
+        os.remove("/tmp/caelestia-desktop-mapping.json")
 
     if not windows:
         return

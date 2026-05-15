@@ -22,11 +22,35 @@ StyledClippingRect {
         const occ = {};
         for (const ws of Hypr.workspaces.values)
             occ[ws.id] = ws.lastIpcObject.windows > 0;
+        // Also mark workspaces with minimized windows as occupied
+        for (const addr in root.desktopWinMap) {
+            const ws = parseInt(desktopWinMap[addr]);
+            occ[ws] = true;
+        }
         return occ;
     }
     readonly property int groupOffset: Math.floor((activeWsId - 1) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
 
     property real blur: onSpecial ? 1 : 0
+    property var desktopWinMap: ({})
+
+    Process {
+        id: mapReader
+        command: ["cat", "/tmp/caelestia-desktop-mapping.json"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try { root.desktopWinMap = JSON.parse(text); }
+                catch (e) { root.desktopWinMap = {}; }
+            }
+        }
+    }
+
+    Timer {
+        interval: 3000
+        running: true
+        repeat: true
+        onTriggered: mapReader.running = true
+    }
 
     implicitWidth: Tokens.sizes.bar.innerWidth
     implicitHeight: Tokens.padding.small + layout.implicitHeight + Tokens.spacing.smaller + showDesktopButton.implicitHeight + Tokens.padding.small
@@ -78,6 +102,7 @@ StyledClippingRect {
                     activeWsId: root.activeWsId
                     occupied: root.occupied
                     groupOffset: root.groupOffset
+                    desktopWinMap: root.desktopWinMap
                 }
             }
         }
