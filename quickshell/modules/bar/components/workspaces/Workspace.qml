@@ -95,9 +95,11 @@ ColumnLayout {
                     values: {
                         const ws = root.ws;
                         const windows = Hypr.toplevels.values.filter(c => c.workspace?.id === ws);
-                        for (const c of Hypr.toplevels.values) {
-                            if (c.workspace?.name === "desktop" && desktopWinMap[c.address] == ws) {
-                                windows.push(c);
+                        for (const addr in desktopWinMap) {
+                            const entry = desktopWinMap[addr];
+                            if (entry.ws == ws) {
+                                const c = Hypr.toplevels.values.find(t => t.address === addr);
+                                if (c) windows.push(c);
                             }
                         }
                         const maxIcons = root.Config.bar.workspaces.maxWindowIcons;
