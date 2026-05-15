@@ -15,7 +15,7 @@ Item {
 
     required property PopoutState popouts
 
-    property list<var> desktopWindows: []
+    property var desktopWindows: []
 
     implicitWidth: Hypr.activeToplevel ? child.implicitWidth : -Tokens.padding.large * 2
     implicitHeight: child.implicitHeight
