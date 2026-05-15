@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import Caelestia.Config
@@ -20,18 +18,19 @@ Item {
     implicitWidth: Math.max(child.implicitWidth, Tokens.padding.large * 2)
     implicitHeight: Math.max(child.implicitHeight, Tokens.padding.large * 2)
 
-    Process {
-        id: clientProc
-        command: ["cat", "/tmp/caelestia-desktop-windows.json"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try { root.desktopWindows = JSON.parse(text); }
+    function loadDesktopWindows() {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "file:///tmp/caelestia-desktop-windows.json");
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                try { root.desktopWindows = JSON.parse(xhr.responseText); }
                 catch (e) { root.desktopWindows = []; }
             }
-        }
+        };
+        xhr.send();
     }
 
-    Component.onCompleted: clientProc.running = true
+    Component.onCompleted: loadDesktopWindows()
 
     Column {
         id: child
