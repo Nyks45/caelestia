@@ -23,10 +23,15 @@ Item {
         xhr.open("GET", "file:///tmp/caelestia-desktop-windows.json");
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                try { root.desktopWindows = JSON.parse(xhr.responseText); }
-                catch (e) { root.desktopWindows = []; }
+                if (xhr.status === 0 || xhr.status === 200) {
+                    try { root.desktopWindows = JSON.parse(xhr.responseText); }
+                    catch (e) { console.warn("desktop-windows parse error:", e); }
+                } else {
+                    console.warn("desktop-windows XHR status:", xhr.status, xhr.statusText);
+                }
             }
         };
+        xhr.onerror = () => console.warn("desktop-windows XHR error");
         xhr.send();
     }
 
