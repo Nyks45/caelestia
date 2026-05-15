@@ -18,7 +18,7 @@ Item {
     property var desktopWindows: []
 
     implicitWidth: Math.max(child.implicitWidth, Tokens.padding.large * 2)
-    implicitHeight: child.implicitHeight
+    implicitHeight: Math.max(child.implicitHeight, Tokens.padding.large * 2)
 
     Process {
         id: clientProc
