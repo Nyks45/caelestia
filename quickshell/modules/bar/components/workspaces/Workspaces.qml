@@ -29,7 +29,7 @@ StyledClippingRect {
     property real blur: onSpecial ? 1 : 0
 
     implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: layout.implicitHeight + Tokens.padding.small * 2 + (showDesktopButton.visible ? showDesktopButton.implicitHeight + Math.floor(Tokens.spacing.small / 2) : 0)
+    implicitHeight: Tokens.padding.small + layout.implicitHeight + Tokens.spacing.smaller + showDesktopButton.implicitHeight + Tokens.padding.small
 
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
@@ -64,7 +64,9 @@ StyledClippingRect {
         ColumnLayout {
             id: layout
 
-            anchors.centerIn: parent
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: Tokens.padding.small
             spacing: Math.floor(Tokens.spacing.small / 2)
 
             Repeater {
@@ -108,21 +110,21 @@ StyledClippingRect {
             id: showDesktopButton
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: layout.bottom
-            anchors.topMargin: Math.floor(Tokens.spacing.small / 2)
+            anchors.topMargin: Tokens.spacing.smaller
             implicitWidth: desktopIcon.implicitHeight + Tokens.padding.small * 2
             implicitHeight: desktopIcon.implicitHeight + Tokens.padding.small * 2
 
-                StateLayer {
-                    anchors.fill: parent
-                    radius: Tokens.rounding.full
-                    hoverEnabled: true
-                    onClicked: showDesktopProc.running = true
-                }
+            StateLayer {
+                anchors.fill: parent
+                radius: Tokens.rounding.full
+                hoverEnabled: true
+                onClicked: showDesktopProc.running = true
+            }
 
-                Process {
-                    id: showDesktopProc
-                    command: ["/home/hakan/.local/bin/hypr-show-desktop"]
-                }
+            Process {
+                id: showDesktopProc
+                command: ["/home/hakan/.local/bin/hypr-show-desktop"]
+            }
 
             MaterialIcon {
                 id: desktopIcon
