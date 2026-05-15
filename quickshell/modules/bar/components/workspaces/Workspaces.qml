@@ -77,6 +77,26 @@ StyledClippingRect {
                     groupOffset: root.groupOffset
                 }
             }
+
+            Item {
+                implicitWidth: showDesktopIcon.implicitHeight
+                implicitHeight: showDesktopIcon.implicitHeight
+
+                StateLayer {
+                    anchors.fill: parent
+                    radius: Tokens.rounding.full
+                    hoverEnabled: true
+                    onClicked: Hypr.dispatch("togglespecialworkspace desktop")
+                }
+
+                MaterialIcon {
+                    id: showDesktopIcon
+                    anchors.centerIn: parent
+                    text: "desktop_windows"
+                    font.pointSize: Tokens.font.size.small
+                    color: Colours.palette.m3onSurfaceVariant
+                }
+            }
         }
 
         Loader {
