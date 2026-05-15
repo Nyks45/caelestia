@@ -102,11 +102,26 @@ Item {
                 anchors.right: parent.right
                 implicitHeight: row.implicitHeight
 
+                StateLayer {
+                    anchors.fill: parent
+                    radius: Tokens.rounding.small
+                    z: 0
+                    onClicked: {
+                        const ws = client.workspace;
+                        if (ws?.name.startsWith("special:")) {
+                            Hypr.dispatch("movetoworkspace " + Hypr.activeWsId + ",address:0x" + client.address);
+                        }
+                        Hypr.dispatch("focuswindow address:0x" + client.address);
+                        root.popouts.hasCurrent = false;
+                    }
+                }
+
                 RowLayout {
                     id: row
                     anchors.left: parent.left
                     anchors.right: parent.right
                     spacing: Tokens.spacing.normal
+                    z: 1
 
                     MaterialIcon {
                         text: Icons.getAppCategoryIcon(client.lastIpcObject.class, "terminal")
@@ -120,18 +135,20 @@ Item {
                         elide: Text.ElideRight
                         font.weight: isActive ? 600 : 400
                     }
-                }
 
-                StateLayer {
-                    anchors.fill: parent
-                    radius: Tokens.rounding.small
-                    onClicked: {
-                        const ws = client.workspace;
-                        if (ws?.name.startsWith("special:")) {
-                            Hypr.dispatch("movetoworkspace " + Hypr.activeWsId + ",address:0x" + client.address);
+                    IconTextButton {
+                        Layout.preferredHeight: implicitHeight
+                        text: qsTr("Close")
+                        icon: "close"
+                        inactiveColour: Colours.palette.m3errorContainer
+                        inactiveOnColour: Colours.palette.m3onErrorContainer
+                        verticalPadding: Tokens.padding.smaller
+                        z: 2
+
+                        onClicked: {
+                            Hypr.dispatch("killwindow address:0x" + client.address);
+                            root.popouts.hasCurrent = false;
                         }
-                        Hypr.dispatch("focuswindow address:0x" + client.address);
-                        root.popouts.hasCurrent = false;
                     }
                 }
             }
