@@ -19,17 +19,14 @@ def show_desktop():
     clients = get_json("clients")
     windows = [(c["address"], ws_id) for c in clients if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]]
 
-    if windows:
-        cmds = [f"dispatch movetoworkspace special:desktop,address:{addr}" for addr, _ in windows]
-        hyprctl("--batch", ";".join(cmds))
+    if not windows:
+        return
 
-        with open(STATE_FILE, "w") as f:
-            json.dump({"windows": windows, "workspace": ws_id}, f)
+    cmds = [f"dispatch movetoworkspace special:desktop,address:{addr}" for addr, _ in windows]
+    hyprctl("--batch", ";".join(cmds))
 
-        time.sleep(0.2)
-
-    # Switch to the special workspace
-    hyprctl("dispatch", "workspace", "special:desktop")
+    with open(STATE_FILE, "w") as f:
+        json.dump({"windows": windows, "workspace": ws_id}, f)
 
 def restore():
     if not os.path.exists(STATE_FILE):
@@ -43,14 +40,11 @@ def restore():
 
     os.remove(STATE_FILE)
 
-    # Move windows back
-    if windows:
-        cmds = [f"dispatch movetoworkspace {ws_id},address:{addr}" for addr, _ in windows]
-        hyprctl("--batch", ";".join(cmds))
-        time.sleep(0.2)
+    if not windows:
+        return
 
-    # Switch back to original workspace
-    hyprctl("dispatch", "workspace", str(ws_id))
+    cmds = [f"dispatch movetoworkspace {ws_id},address:{addr}" for addr, _ in windows]
+    hyprctl("--batch", ";".join(cmds))
 
 if __name__ == "__main__":
     if os.path.exists(STATE_FILE):
