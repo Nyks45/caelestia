@@ -46,7 +46,7 @@ StyledClippingRect {
     }
 
     Timer {
-        interval: 3000
+        interval: 1000
         running: true
         repeat: true
         onTriggered: mapReader.running = true
@@ -143,13 +143,14 @@ StyledClippingRect {
                 anchors.fill: parent
                 radius: Tokens.rounding.full
                 hoverEnabled: true
-                onClicked: showDesktopProc.running = true
-            }
+                    onClicked: showDesktopProc.running = true
+                }
 
-            Process {
-                id: showDesktopProc
-                command: ["/home/hakan/.local/bin/hypr-show-desktop"]
-            }
+                Process {
+                    id: showDesktopProc
+                    command: ["/home/hakan/.local/bin/hypr-show-desktop"]
+                    onExited: _code => { mapReader.running = true; }
+                }
 
             MaterialIcon {
                 id: desktopIcon
