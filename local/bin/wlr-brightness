@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+
+resolve_name() {
+  busctl --user list 2>/dev/null | awk '/rs.wl.gammarelay/ {print $1; exit}'
+}
+
+case "${1:-}" in
+  get)
+    name=$(resolve_name)
+    [ -z "$name" ] && { echo "d 0"; exit 0; }
+    busctl --user get-property "$name" / rs.wl.gammarelay Brightness 2>/dev/null || echo "d 0"
+    ;;
+  set)
+    name=$(resolve_name)
+    [ -z "$name" ] && exit 1
+    busctl --user set-property "$name" / rs.wl.gammarelay Brightness d "$2" 2>/dev/null
+    ;;
+  *)
+    echo "Usage: $0 {get|set <value>}"
+    exit 1
+    ;;
+esac

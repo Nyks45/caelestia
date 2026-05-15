@@ -298,6 +298,26 @@ if set -q _flag_zen
     log 'Please install the CaelestiaFox extension from https://addons.mozilla.org/en-US/firefox/addon/caelestiafox if you have not already done so.'
 end
 
+# Quickshell
+if confirm-overwrite $config/quickshell/caelestia
+    log 'Installing quickshell config...'
+    ln -s (realpath quickshell) $config/quickshell/caelestia
+end
+
+# wl-gammarelay-rs
+if ! pacman -Q wl-gammarelay-rs &> /dev/null
+    log 'Installing wl-gammarelay-rs...'
+    $aur_helper -S --needed wl-gammarelay-rs $noconfirm
+end
+
+# wlr-brightness script
+mkdir -p $HOME/.local/bin
+if confirm-overwrite $HOME/.local/bin/wlr-brightness
+    log 'Installing wlr-brightness script...'
+    cp (realpath local/bin/wlr-brightness) $HOME/.local/bin/wlr-brightness
+    chmod +x $HOME/.local/bin/wlr-brightness
+end
+
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
     caelestia scheme set -n shadotheme
