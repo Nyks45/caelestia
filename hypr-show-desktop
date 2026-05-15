@@ -22,7 +22,7 @@ def show_desktop():
     if not windows:
         return
 
-    cmds = [f"dispatch movetoworkspacesilent 10,address:{addr}" for addr, _ in windows]
+    cmds = [f"dispatch movetoworkspacesilent name:desktop,address:{addr}" for addr, _ in windows]
     hyprctl("--batch", ";".join(cmds))
 
     with open(STATE_FILE, "w") as f:

@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import Caelestia.Config
@@ -13,8 +15,33 @@ Item {
 
     required property PopoutState popouts
 
+    property list<var> desktopWindows: []
+
     implicitWidth: Hypr.activeToplevel ? child.implicitWidth : -Tokens.padding.large * 2
     implicitHeight: child.implicitHeight
+
+    Process {
+        id: clientProc
+        command: ["hyprctl", "clients", "-j"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const data = JSON.parse(text);
+                    const dw = [];
+                    for (const c of data) {
+                        if (c.workspace?.name === "desktop" && c.mapped) {
+                            dw.push(c);
+                        }
+                    }
+                    root.desktopWindows = dw;
+                } catch (e) {}
+            }
+        }
+    }
+
+    onVisibleChanged: {
+        if (visible) clientProc.running = true;
+    }
 
     Column {
         id: child
@@ -149,6 +176,66 @@ Item {
                             Hypr.dispatch("killwindow address:0x" + client.address);
                             root.popouts.hasCurrent = false;
                         }
+                    }
+                }
+            }
+        }
+
+        Repeater {
+            model: root.desktopWindows
+
+            delegate: Item {
+                required property var modelData
+                readonly property var win: modelData
+                anchors.left: parent.left
+                anchors.right: parent.right
+                implicitHeight: desktopRow.implicitHeight
+
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: 1
+                    color: Colours.palette.m3OutlineVariant
+                    visible: index === 0
+                }
+
+                StateLayer {
+                    anchors.fill: parent
+                    radius: Tokens.rounding.small
+                    z: 0
+                    onClicked: {
+                        Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:" + win.address);
+                        Hypr.dispatch("focuswindow address:" + win.address);
+                        root.popouts.hasCurrent = false;
+                    }
+                }
+
+                RowLayout {
+                    id: desktopRow
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: Tokens.spacing.normal
+                    z: 1
+
+                    MaterialIcon {
+                        text: Icons.getAppCategoryIcon(win.class, "terminal")
+                        color: Colours.palette.m3onSurfaceVariant
+                        font.pointSize: Tokens.font.size.large
+                    }
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: win.title || qsTr("Untitled")
+                        elide: Text.ElideRight
+                        opacity: 0.7
+                    }
+
+                    MaterialIcon {
+                        text: "unfold_more"
+                        color: Colours.palette.m3onSurfaceVariant
+                        font.pointSize: Tokens.font.size.small
+                        opacity: 0.5
                     }
                 }
             }
