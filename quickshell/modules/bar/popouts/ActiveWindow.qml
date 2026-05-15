@@ -17,7 +17,7 @@ Item {
 
     property var desktopWindows: []
 
-    implicitWidth: Hypr.activeToplevel ? child.implicitWidth : -Tokens.padding.large * 2
+    implicitWidth: Math.max(child.implicitWidth, Tokens.padding.large * 2)
     implicitHeight: child.implicitHeight
 
     Process {
@@ -39,9 +39,7 @@ Item {
         }
     }
 
-    onVisibleChanged: {
-        if (visible) clientProc.running = true;
-    }
+    Component.onCompleted: clientProc.running = true
 
     Column {
         id: child
@@ -61,7 +59,7 @@ Item {
                 asynchronous: true
                 Layout.alignment: Qt.AlignVCenter
                 implicitSize: details.implicitHeight
-                source: Icons.getAppIcon(Hypr.activeToplevel?.lastIpcObject.class ?? "", "image-missing")
+                source: Icons.getAppIcon(Hypr.activeToplevel?.lastIpcObject.class ?? "", "desktop_windows")
             }
 
             ColumnLayout {
@@ -71,7 +69,7 @@ Item {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Hypr.activeToplevel?.title ?? ""
+                    text: Hypr.activeToplevel?.title ?? qsTr("Desktop")
                     font.pointSize: Tokens.font.size.normal
                     elide: Text.ElideRight
                 }
@@ -81,6 +79,7 @@ Item {
                     text: Hypr.activeToplevel?.lastIpcObject.class ?? ""
                     color: Colours.palette.m3onSurfaceVariant
                     elide: Text.ElideRight
+                    visible: Hypr.activeToplevel != null
                 }
             }
 
@@ -107,6 +106,7 @@ Item {
         ClippingWrapperRectangle {
             color: "transparent"
             radius: Tokens.rounding.small
+            visible: Hypr.activeToplevel != null
 
             ScreencopyView {
                 id: preview
