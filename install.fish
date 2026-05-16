@@ -304,6 +304,12 @@ if confirm-overwrite $config/quickshell/caelestia
     ln -s (realpath quickshell) $config/quickshell/caelestia
 end
 
+# Hyprbars
+log 'Installing hyprbars plugin...'
+hyprpm update
+hyprpm add https://github.com/hyprwm/hyprland-plugins
+hyprpm enable hyprbars
+
 # wl-gammarelay-rs
 if ! pacman -Q wl-gammarelay-rs &> /dev/null
     log 'Installing wl-gammarelay-rs...'
