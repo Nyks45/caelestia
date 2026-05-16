@@ -70,7 +70,7 @@ Item {
 
             StyledText {
                 anchors.centerIn: parent
-                text: "DEBUG: " + root.debugInfo + " (triggers=" + root.triggerCount + ")"
+                text: "wsId=" + Hypr.activeWsId
                 color: "white"
                 font.pointSize: 10
             }
