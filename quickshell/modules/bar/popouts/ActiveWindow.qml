@@ -15,26 +15,44 @@ Item {
 
     required property PopoutState popouts
 
-    property var desktopWindows: []
+    property var allClients: []
+
+    property string debugInfo: ""
+    property int triggerCount: 0
 
     implicitWidth: Math.max(child.implicitWidth, Tokens.padding.large * 2)
     implicitHeight: Math.max(child.implicitHeight, Tokens.padding.large * 2)
 
     Process {
-        id: clientProc
-        command: ["cat", "/tmp/caelestia-desktop-windows.json"]
+        id: hyprctlReader
+        command: ["/usr/bin/python3", "-c", "import json,subprocess,sys; sys.stdout.write(subprocess.run(['hyprctl','-j','clients'],capture_output=True,text=True).stdout)"]
         stdout: StdioCollector {
             onStreamFinished: {
-                try { root.desktopWindows = JSON.parse(text); }
-                catch (e) { root.desktopWindows = []; }
+                try {
+                    root.allClients = JSON.parse(text);
+                    root.debugInfo = "OK: " + root.allClients.length + " clients";
+                } catch (e) {
+                    root.allClients = [];
+                    root.debugInfo = "ERR: " + e.message + " | text=" + text.substring(0,100);
+                }
             }
         }
     }
 
     Timer {
-        interval: 1
+        interval: 1000
         running: true
-        onTriggered: clientProc.running = true
+        repeat: true
+        onTriggered: {
+            root.triggerCount++;
+            root.debugInfo = "TRIGGER #" + root.triggerCount + " (allClients=" + root.allClients.length + ")";
+            hyprctlReader.running = true;
+        }
+    }
+
+    Component.onCompleted: {
+        root.debugInfo = "INIT (allClients=" + root.allClients.length + ")";
+        hyprctlReader.running = true;
     }
 
     Column {
@@ -42,6 +60,21 @@ Item {
 
         anchors.centerIn: parent
         spacing: Tokens.spacing.normal
+
+        Rectangle {
+            id: debugRect
+            visible: true
+            width: 200
+            height: 30
+            color: "red"
+
+            StyledText {
+                anchors.centerIn: parent
+                text: "DEBUG: " + root.debugInfo + " (triggers=" + root.triggerCount + ")"
+                color: "white"
+                font.pointSize: 10
+            }
+        }
 
         RowLayout {
             id: detailsRow
@@ -131,8 +164,8 @@ Item {
                     z: 0
                     onClicked: {
                         const ws = client.workspace;
-                        if (ws?.name.startsWith("special:")) {
-                            Hypr.dispatch("movetoworkspace " + Hypr.activeWsId + ",address:0x" + client.address);
+                        if (ws?.name === "desktop" || ws?.name.startsWith("special:")) {
+                            Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + client.address);
                         }
                         Hypr.dispatch("focuswindow address:0x" + client.address);
                         root.popouts.hasCurrent = false;
@@ -178,42 +211,55 @@ Item {
         }
 
         Repeater {
-            model: root.desktopWindows
+            model: ScriptModel {
+                values: {
+                    const currentWsId = Hypr.activeWsId;
+                    const currentWsWindows = root.allClients.filter(c => c.workspace?.id === currentWsId && c.workspace?.name !== "desktop");
+                    if (currentWsWindows.length > 0) return [];
+                    return root.allClients;
+                }
+            }
 
             delegate: Item {
                 required property var modelData
-                readonly property var win: modelData
+                readonly property var client: modelData
+                readonly property var addr: client.address ?? ""
+                readonly property var normalAddr: addr.startsWith("0x") ? addr.substring(2) : addr
+
                 anchors.left: parent.left
                 anchors.right: parent.right
-                implicitHeight: desktopRow.implicitHeight
+                implicitHeight: row.implicitHeight
 
                 StateLayer {
                     anchors.fill: parent
                     radius: Tokens.rounding.small
                     z: 0
                     onClicked: {
-                        Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + win.address);
-                        Hypr.dispatch("focuswindow address:0x" + win.address);
+                        const ws = client.workspace;
+                        if (ws?.name === "desktop" || ws?.name.startsWith("special:")) {
+                            Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + normalAddr);
+                        }
+                        Hypr.dispatch("focuswindow address:0x" + normalAddr);
                         root.popouts.hasCurrent = false;
                     }
                 }
 
                 RowLayout {
-                    id: desktopRow
+                    id: row
                     anchors.left: parent.left
                     anchors.right: parent.right
                     spacing: Tokens.spacing.normal
                     z: 1
 
                     MaterialIcon {
-                        text: Icons.getAppCategoryIcon(win.class, "terminal")
+                        text: Icons.getAppCategoryIcon(client.class ?? client.lastIpcObject?.class ?? "", "terminal")
                         color: Colours.palette.m3onSurfaceVariant
                         font.pointSize: Tokens.font.size.large
                     }
 
                     StyledText {
                         Layout.fillWidth: true
-                        text: win.title || qsTr("Untitled")
+                        text: client.title || qsTr("Untitled")
                         elide: Text.ElideRight
                         opacity: 0.7
                     }
