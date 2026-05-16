@@ -22,6 +22,6 @@ optdepends=('thunar: file manager'
             'todoist-appimage: todo manager'
             'uwsm: uwsm session'
             'gnome-keyring: keyring daemon'
-            'polkit-gnome: gnome polkit client'
+            'hyprpolkitagent: polkit agent'
             'direnv: isolated dev envs'
             'zoxide: better cd')
