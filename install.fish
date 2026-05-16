@@ -3,7 +3,6 @@
 argparse -n 'install.fish' -X 0 \
     'h/help' \
     'noconfirm' \
-    'spotify' \
     'vscode=?!contains -- "$_flag_value" codium code' \
     'discord' \
     'zen' \
@@ -13,12 +12,11 @@ or exit
 
 # Print help
 if set -q _flag_h
-    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--aur-helper]'
+    echo 'usage: ./install.sh [-h] [--noconfirm] [--vscode] [--discord] [--aur-helper]'
     echo
     echo 'options:'
     echo '  -h, --help                  show this help message and exit'
     echo '  --noconfirm                 do not confirm package installation'
-    echo '  --spotify                   install Spotify (Spicetify)'
     echo '  --vscode=[codium|code]      install VSCodium (or VSCode)'
     echo '  --discord                   install Discord (OpenAsar + Equicord)'
     echo '  --zen                       install Zen browser'
@@ -206,11 +204,10 @@ if confirm-overwrite $config/btop
 end
 
 # Install spicetify
-if set -q _flag_spotify
-    log 'Installing spotify (spicetify)...'
+log 'Installing spotify (spicetify)...'
 
-    set -l has_spicetify (pacman -Q spicetify-cli 2> /dev/null)
-    $aur_helper -S --needed spotify spicetify-cli spicetify-marketplace-bin $noconfirm
+set -l has_spicetify (pacman -Q spicetify-cli 2> /dev/null)
+$aur_helper -S --needed spotify spicetify-cli spicetify-marketplace-bin $noconfirm
 
     # Set permissions and init if new install
     if test -z "$has_spicetify"
@@ -228,7 +225,6 @@ if set -q _flag_spotify
         spicetify config current_theme caelestia color_scheme caelestia custom_apps marketplace 2> /dev/null
         spicetify apply
     end
-end
 
 # Install vscode
 if set -q _flag_vscode
