@@ -15,45 +15,8 @@ Item {
 
     required property PopoutState popouts
 
-    property var allClients: []
-
-    property string debugInfo: ""
-    property int triggerCount: 0
-
     implicitWidth: Math.max(400, child.implicitWidth)
     implicitHeight: Math.max(child.implicitHeight, Tokens.padding.large * 2)
-
-    Process {
-        id: hyprctlReader
-        command: ["/usr/bin/python3", "-c", "import json,subprocess,sys; sys.stdout.write(subprocess.run(['hyprctl','-j','clients'],capture_output=True,text=True).stdout)"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try {
-                    root.allClients = JSON.parse(text);
-                    root.debugInfo = "OK: " + root.allClients.length + " clients";
-                } catch (e) {
-                    root.allClients = [];
-                    root.debugInfo = "ERR: " + e.message + " | text=" + text.substring(0,100);
-                }
-            }
-        }
-    }
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: {
-            root.triggerCount++;
-            root.debugInfo = "TRIGGER #" + root.triggerCount + " (allClients=" + root.allClients.length + ")";
-            hyprctlReader.running = true;
-        }
-    }
-
-    Component.onCompleted: {
-        root.debugInfo = "INIT (allClients=" + root.allClients.length + ")";
-        hyprctlReader.running = true;
-    }
 
     Column {
         id: child
@@ -62,23 +25,34 @@ Item {
         width: root.implicitWidth
         spacing: Tokens.spacing.normal
 
-        Rectangle {
-            id: debugRect
-            visible: false
-            width: 300
-            height: 80
-            color: "red"
-            radius: 4
+            Rectangle {
+                id: debugRect
+                visible: false
+                width: 300
+                height: 80
+                color: "red"
+                radius: 4
+
+                StyledText {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    text: "tl=" + (Hypr.toplevels.values ? Array.from(Hypr.toplevels.values).length : "NULL") + " wsId=" + Hypr.activeWsId
+                    color: "white"
+                    font.pointSize: 9
+                    wrapMode: Text.WordWrap
+                }
+            }
 
             StyledText {
-                anchors.fill: parent
-                anchors.margins: 4
-                text: "tl=" + (Hypr.toplevels.values ? Hypr.toplevels.values.length : "NULL") + " cli=" + root.allClients.length + " wsId=" + Hypr.activeWsId
-                color: "white"
+                visible: false
+                color: "red"
+                text: {
+                    const arr = Array.from(Hypr.toplevels.values);
+                    return arr.map(c => (c.class || "?") + ":" + (c.workspace?.name || "?")).join("\n");
+                }
                 font.pointSize: 9
                 wrapMode: Text.WordWrap
             }
-        }
 
         RowLayout {
             id: detailsRow
@@ -153,13 +127,7 @@ Item {
 
         Repeater {
             model: ScriptModel {
-                values: {
-                    const currentWsId = Hypr.activeWsId;
-                    const toplevels = Array.from(Hypr.toplevels.values);
-                    const wsWindows = toplevels.filter(c => c.workspace?.id === currentWsId && c.workspace?.name !== "desktop");
-                    if (wsWindows.length > 0) return wsWindows;
-                    return root.allClients;
-                }
+                values: Array.from(Hypr.toplevels.values)
             }
 
             delegate: Item {
@@ -176,6 +144,7 @@ Item {
                     anchors.fill: parent
                     radius: Tokens.rounding.small
                     z: 0
+
                     onClicked: {
                         const ws = client.workspace;
                         if (ws?.name === "desktop" || ws?.name.startsWith("special:")) {
