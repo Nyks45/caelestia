@@ -151,75 +151,12 @@ Item {
         }
 
         Repeater {
-            model: Hypr.toplevels.values
-
-            delegate: Item {
-                required property var modelData
-                readonly property var client: modelData
-                readonly property bool isActive: Hypr.activeToplevel?.address === client.address
-
-                anchors.left: parent.left
-                anchors.right: parent.right
-                implicitHeight: row.implicitHeight
-
-                StateLayer {
-                    anchors.fill: parent
-                    radius: Tokens.rounding.small
-                    z: 0
-                    onClicked: {
-                        const ws = client.workspace;
-                        if (ws?.name === "desktop" || ws?.name.startsWith("special:")) {
-                            Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + client.address);
-                        }
-                        Hypr.dispatch("focuswindow address:0x" + client.address);
-                        root.popouts.hasCurrent = false;
-                    }
-                }
-
-                RowLayout {
-                    id: row
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    spacing: Tokens.spacing.normal
-                    z: 1
-
-                    MaterialIcon {
-                        text: Icons.getAppCategoryIcon(client.lastIpcObject.class, "terminal")
-                        color: Colours.palette.m3onSurfaceVariant
-                        font.pointSize: Tokens.font.size.large
-                    }
-
-                    StyledText {
-                        Layout.fillWidth: true
-                        text: client.title || qsTr("Untitled")
-                        elide: Text.ElideRight
-                        font.weight: isActive ? 600 : 400
-                    }
-
-                    IconTextButton {
-                        Layout.preferredHeight: implicitHeight
-                        text: qsTr("Close")
-                        icon: "close"
-                        inactiveColour: Colours.palette.m3errorContainer
-                        inactiveOnColour: Colours.palette.m3onErrorContainer
-                        verticalPadding: Tokens.padding.smaller
-                        z: 2
-
-                        onClicked: {
-                            Hypr.dispatch("killwindow address:0x" + client.address);
-                            root.popouts.hasCurrent = false;
-                        }
-                    }
-                }
-            }
-        }
-
-        Repeater {
             model: ScriptModel {
                 values: {
                     const currentWsId = Hypr.activeWsId;
-                    const currentWsWindows = root.allClients.filter(c => c.workspace?.id === currentWsId && c.workspace?.name !== "desktop");
-                    if (currentWsWindows.length > 0) return [];
+                    const toplevels = Array.from(Hypr.toplevels.values);
+                    const wsWindows = toplevels.filter(c => c.workspace?.id === currentWsId && c.workspace?.name !== "desktop");
+                    if (wsWindows.length > 0) return wsWindows;
                     return root.allClients;
                 }
             }
@@ -227,8 +164,9 @@ Item {
             delegate: Item {
                 required property var modelData
                 readonly property var client: modelData
-                readonly property var addr: client.address ?? ""
-                readonly property var normalAddr: addr.startsWith("0x") ? addr.substring(2) : addr
+                readonly property bool isActive: Hypr.activeToplevel?.address === client.address
+                readonly property var addr: (client.address ?? "").startsWith("0x") ? client.address.substring(2) : client.address ?? ""
+                readonly property bool fromToplevel: client.lastIpcObject != null
 
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -241,9 +179,9 @@ Item {
                     onClicked: {
                         const ws = client.workspace;
                         if (ws?.name === "desktop" || ws?.name.startsWith("special:")) {
-                            Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + normalAddr);
+                            Hypr.dispatch("movetoworkspacesilent " + Hypr.activeWsId + ",address:0x" + addr);
                         }
-                        Hypr.dispatch("focuswindow address:0x" + normalAddr);
+                        Hypr.dispatch("focuswindow address:0x" + addr);
                         root.popouts.hasCurrent = false;
                     }
                 }
@@ -265,7 +203,24 @@ Item {
                         Layout.fillWidth: true
                         text: client.title || qsTr("Untitled")
                         elide: Text.ElideRight
-                        opacity: 0.7
+                        font.weight: isActive ? 600 : 400
+                        opacity: fromToplevel ? 1.0 : 0.7
+                    }
+
+                    IconTextButton {
+                        Layout.preferredHeight: implicitHeight
+                        text: qsTr("Close")
+                        icon: "close"
+                        inactiveColour: Colours.palette.m3errorContainer
+                        inactiveOnColour: Colours.palette.m3onErrorContainer
+                        verticalPadding: Tokens.padding.smaller
+                        z: 2
+                        visible: fromToplevel
+
+                        onClicked: {
+                            Hypr.dispatch("killwindow address:0x" + addr);
+                            root.popouts.hasCurrent = false;
+                        }
                     }
 
                     MaterialIcon {
@@ -273,6 +228,7 @@ Item {
                         color: Colours.palette.m3onSurfaceVariant
                         font.pointSize: Tokens.font.size.small
                         opacity: 0.5
+                        visible: !fromToplevel
                     }
                 }
             }
