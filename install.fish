@@ -306,6 +306,10 @@ hyprpm update
 hyprpm add https://github.com/hyprwm/hyprland-plugins
 hyprpm enable hyprbars
 
+# Editor, file manager, polkit
+log 'Installing gnome-text-editor, nautilus, polkit-gnome...'
+$aur_helper -S --needed gnome-text-editor nautilus polkit-gnome $noconfirm
+
 # wl-gammarelay-rs
 if ! pacman -Q wl-gammarelay-rs &> /dev/null
     log 'Installing wl-gammarelay-rs...'

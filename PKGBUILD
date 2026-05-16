@@ -7,14 +7,14 @@ pkgver=r183.cf94e7f
 pkgrel=1
 pkgdesc='A metapackage containing all dependencies for the Caelestia dotfiles'
 arch=('any')
-url='https://github.com/caelestia-dots/caelestia'
+url='https://github.com/Nyks45/caelestia'
 license=('GPL-3.0-only')
 depends=('caelestia-cli' 'caelestia-shell'
          'hyprland' 'xdg-desktop-portal-hyprland' 'xdg-desktop-portal-gtk' 'hyprpicker'
          'wl-clipboard' 'cliphist' 'inotify-tools' 'app2unit' 'wireplumber' 'trash-cli'
          'foot' 'fish' 'eza' 'fastfetch' 'starship' 'btop' 'jq' 'adw-gtk-theme'
           'papirus-icon-theme' 'qtengine' 'ttf-jetbrains-mono-nerd'
-          'wl-gammarelay-rs')
+          'wl-gammarelay-rs' 'gnome-text-editor' 'nautilus' 'polkit-gnome')
 optdepends=('thunar: file manager'
             'spotify: music player'
             'vscode: code editor'
