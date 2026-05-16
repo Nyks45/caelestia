@@ -15,21 +15,23 @@ def get_json(cmd):
 def show_desktop():
     active = get_json("activeworkspace")
     ws_id = active["id"]
+    mon_id = active["monitorID"]
+    mon_name = active["monitor"]
 
     clients = get_json("clients")
-    windows = [(c["address"], ws_id) for c in clients if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]]
+    windows = [(c["address"], ws_id, mon_id, mon_name, c.get("at", [0, 0]), c.get("size", [0, 0]), c.get("floating", False)) for c in clients if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]]
 
     if not windows:
         return
 
-    cmds = [f"dispatch movetoworkspacesilent name:desktop,address:{addr}" for addr, _ in windows]
+    cmds = [f"dispatch movetoworkspacesilent name:desktop,address:{addr}" for addr, *rest in windows]
     hyprctl("--batch", ";".join(cmds))
 
     with open(STATE_FILE, "w") as f:
         json.dump({"windows": windows, "workspace": ws_id}, f)
 
     # Write address → original workspace mapping for workspace dot icons
-    mapping = {addr.replace("0x", ""): str(ws_id) for addr, ws_id in windows}
+    mapping = {addr.replace("0x", ""): str(orig_ws) for addr, orig_ws, *_ in windows}
     with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
         json.dump(mapping, f)
 
@@ -63,8 +65,15 @@ def restore():
     if not windows:
         return
 
-    cmds = [f"dispatch movetoworkspacesilent {ws_id},address:{addr}" for addr, _ in windows]
-    hyprctl("--batch", ";".join(cmds))
+    # Restore each window to its original workspace on its original monitor
+    for entry in windows:
+        addr = entry[0]
+        orig_ws = entry[1] if len(entry) > 1 else ws_id
+        orig_mon = entry[3] if len(entry) > 3 else None
+        if orig_mon:
+            hyprctl("dispatch", "focusmonitor", orig_mon)
+        hyprctl("dispatch", f"movetoworkspacesilent {orig_ws},address:{addr}")
+        time.sleep(0.05)
 
 if __name__ == "__main__":
     if os.path.exists(STATE_FILE):
