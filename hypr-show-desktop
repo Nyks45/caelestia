@@ -28,26 +28,20 @@ def show_desktop():
     with open(STATE_FILE, "w") as f:
         json.dump({"windows": windows, "workspace": ws_id}, f)
 
-    # Write address → original workspace mapping + window details
-    mapping = {}
-    popout_windows = []
-    for addr, ws_id in windows:
-        addr_clean = addr.replace("0x", "")
-        for c in clients:
-            if c["address"] == addr:
-                mapping[addr_clean] = {
-                    "ws": str(ws_id),
-                    "title": c.get("title", ""),
-                    "class": c.get("class", "")
-                }
-                popout_windows.append({
-                    "address": addr_clean,
-                    "title": c.get("title", ""),
-                    "class": c.get("class", "")
-                })
-                break
+    # Write address → original workspace mapping for workspace dot icons
+    mapping = {addr.replace("0x", ""): str(ws_id) for addr, ws_id in windows}
     with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
         json.dump(mapping, f)
+
+    # Write window details for the popout window list
+    popout_windows = []
+    for c in clients:
+        if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]:
+            popout_windows.append({
+                "address": c["address"].replace("0x", ""),
+                "title": c.get("title", ""),
+                "class": c.get("class", "")
+            })
     with open("/tmp/caelestia-desktop-windows.json", "w") as f:
         json.dump(popout_windows, f)
 

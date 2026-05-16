@@ -8,7 +8,6 @@ import Quickshell.Io
 import Caelestia.Config
 import qs.components
 import qs.services
-import qs.utils
 
 StyledClippingRect {
     id: root
@@ -25,7 +24,7 @@ StyledClippingRect {
             occ[ws.id] = ws.lastIpcObject.windows > 0;
         // Also mark workspaces with minimized windows as occupied
         for (const addr in root.desktopWinMap) {
-            const ws = parseInt(desktopWinMap[addr].ws);
+            const ws = parseInt(desktopWinMap[addr]);
             occ[ws] = true;
         }
         return occ;
@@ -54,7 +53,7 @@ StyledClippingRect {
     }
 
     implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: Tokens.padding.small + layout.implicitHeight + Tokens.spacing.smaller + showDesktopButton.implicitHeight + Tokens.padding.small + (minimizedList.visible ? minimizedList.implicitHeight + Tokens.spacing.smaller : 0)
+    implicitHeight: Tokens.padding.small + layout.implicitHeight + Tokens.spacing.smaller + showDesktopButton.implicitHeight + Tokens.padding.small
 
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
@@ -159,63 +158,6 @@ StyledClippingRect {
                 text: "desktop_windows"
                 font.pointSize: Tokens.font.size.small
                 color: Colours.palette.m3onSurfaceVariant
-            }
-        }
-
-        Column {
-            id: minimizedList
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: showDesktopButton.bottom
-            anchors.topMargin: Tokens.spacing.smaller
-            visible: Object.keys(root.desktopWinMap).length > 0
-
-            Repeater {
-                model: {
-                    const items = [];
-                    for (const addr in root.desktopWinMap) {
-                        const entry = root.desktopWinMap[addr];
-                        items.push({ address: addr, title: entry.title, cls: entry.class });
-                    }
-                    return items;
-                }
-
-                delegate: Item {
-                    required property var modelData
-                    readonly property var win: modelData
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    implicitHeight: row.implicitHeight
-
-                    StateLayer {
-                        anchors.fill: parent
-                        radius: Tokens.rounding.small
-                        onClicked: {
-                            Hypr.dispatch("movetoworkspacesilent " + root.activeWsId + ",address:0x" + win.address);
-                            Hypr.dispatch("focuswindow address:0x" + win.address);
-                        }
-                    }
-
-                    RowLayout {
-                        id: row
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        spacing: Tokens.spacing.smaller
-
-                        MaterialIcon {
-                            text: Icons.getAppCategoryIcon(win.cls, "terminal")
-                            color: Colours.palette.m3onSurfaceVariant
-                            font.pointSize: Tokens.font.size.small
-                        }
-
-                        StyledText {
-                            Layout.fillWidth: true
-                            text: win.title || qsTr("Untitled")
-                            elide: Text.ElideRight
-                            font.pointSize: Tokens.font.size.small
-                            opacity: 0.7
-                        }
-                    }
-                }
             }
         }
 
