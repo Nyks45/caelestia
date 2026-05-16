@@ -70,7 +70,7 @@ Item {
 
             StyledText {
                 anchors.centerIn: parent
-                text: "wsId=" + Hypr.activeWsId
+                text: "toplevels=" + (Hypr.toplevels.values ? Hypr.toplevels.values.length : "NULL")
                 color: "white"
                 font.pointSize: 10
             }
@@ -153,6 +153,8 @@ Item {
                 required property var modelData
                 readonly property var client: modelData
                 readonly property bool isActive: Hypr.activeToplevel?.address === client.address
+                readonly property bool onDesktop: client.workspace?.name === "desktop"
+                visible: !onDesktop
 
                 anchors.left: parent.left
                 anchors.right: parent.right
