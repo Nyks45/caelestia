@@ -64,20 +64,24 @@ Item {
         Rectangle {
             id: debugRect
             visible: true
-            width: 200
-            height: 30
+            width: 300
+            height: 80
             color: "red"
+            radius: 4
 
             StyledText {
-                anchors.centerIn: parent
-                text: "toplevels=" + (Hypr.toplevels.values ? Hypr.toplevels.values.length : "NULL")
+                anchors.fill: parent
+                anchors.margins: 4
+                text: "tl=" + (Hypr.toplevels.values ? Hypr.toplevels.values.length : "NULL") + " cli=" + root.allClients.length + " wsId=" + Hypr.activeWsId
                 color: "white"
-                font.pointSize: 10
+                font.pointSize: 9
+                wrapMode: Text.WordWrap
             }
         }
 
         RowLayout {
             id: detailsRow
+            visible: Hypr.activeToplevel != null
 
             anchors.left: parent.left
             anchors.right: parent.right
@@ -98,7 +102,7 @@ Item {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Hypr.activeToplevel?.title ?? qsTr("Desktop")
+                    text: Hypr.activeToplevel?.title ?? ""
                     font.pointSize: Tokens.font.size.normal
                     elide: Text.ElideRight
                 }
@@ -153,8 +157,6 @@ Item {
                 required property var modelData
                 readonly property var client: modelData
                 readonly property bool isActive: Hypr.activeToplevel?.address === client.address
-                readonly property bool onDesktop: client.workspace?.name === "desktop"
-                visible: !onDesktop
 
                 anchors.left: parent.left
                 anchors.right: parent.right
