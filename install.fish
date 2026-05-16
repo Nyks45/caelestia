@@ -324,6 +324,12 @@ if confirm-overwrite $HOME/.local/bin/wlr-brightness
     chmod +x $HOME/.local/bin/wlr-brightness
 end
 
+# x-terminal-emulator symlink
+if confirm-overwrite $HOME/.local/bin/x-terminal-emulator
+    log 'Setting x-terminal-emulator to foot...'
+    ln -sf /usr/bin/foot $HOME/.local/bin/x-terminal-emulator
+end
+
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
     caelestia scheme set -n shadotheme
