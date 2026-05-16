@@ -20,7 +20,7 @@ Item {
     property string debugInfo: ""
     property int triggerCount: 0
 
-    implicitWidth: Math.max(300, Tokens.padding.large * 2)
+    implicitWidth: Math.max(400, child.implicitWidth)
     implicitHeight: Math.max(child.implicitHeight, Tokens.padding.large * 2)
 
     Process {
