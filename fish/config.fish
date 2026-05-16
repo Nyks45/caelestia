@@ -46,3 +46,5 @@ end
 
 # opencode
 fish_add_path /home/hakan/.opencode/bin
+
+fish_add_path /home/hakan/.spicetify
