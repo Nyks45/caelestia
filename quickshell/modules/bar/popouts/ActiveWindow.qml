@@ -166,7 +166,6 @@ Item {
                 readonly property var client: modelData
                 readonly property bool isActive: Hypr.activeToplevel?.address === client.address
                 readonly property var addr: (client.address ?? "").startsWith("0x") ? client.address.substring(2) : client.address ?? ""
-                readonly property bool fromToplevel: client.lastIpcObject != null
 
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -204,7 +203,6 @@ Item {
                         text: client.title || qsTr("Untitled")
                         elide: Text.ElideRight
                         font.weight: isActive ? 600 : 400
-                        opacity: fromToplevel ? 1.0 : 0.7
                     }
 
                     IconTextButton {
@@ -215,20 +213,11 @@ Item {
                         inactiveOnColour: Colours.palette.m3onErrorContainer
                         verticalPadding: Tokens.padding.smaller
                         z: 2
-                        visible: fromToplevel
 
                         onClicked: {
                             Hypr.dispatch("killwindow address:0x" + addr);
                             root.popouts.hasCurrent = false;
                         }
-                    }
-
-                    MaterialIcon {
-                        text: "unfold_more"
-                        color: Colours.palette.m3onSurfaceVariant
-                        font.pointSize: Tokens.font.size.small
-                        opacity: 0.5
-                        visible: !fromToplevel
                     }
                 }
             }
