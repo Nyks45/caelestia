@@ -15,16 +15,17 @@ Simply clone this repo and run the install script (you need
 > will fail to start completely. I recommend cloning the repo to
 > `~/.local/share/caelestia`.
 
-The install script has some options for installing configs for some apps.
+The install script installs Spotify (with Spicetify) by default, and can install
+configs for VSCode/VSCodium, Discord, and Zen Browser with flags. It also installs
+the hyprbars plugin via hyprpm.
 
 ```
 $ ./install.fish -h
-usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--aur-helper]
+usage: ./install.sh [-h] [--noconfirm] [--vscode] [--discord] [--aur-helper]
 
 options:
   -h, --help                  show this help message and exit
   --noconfirm                 do not confirm package installation
-  --spotify                   install Spotify (Spicetify)
   --vscode=[codium|code]      install VSCodium (or VSCode)
   --discord                   install Discord (OpenAsar + Equicord)
   --zen                       install Zen browser
@@ -34,7 +35,7 @@ options:
 For example:
 
 ```sh
-git clone https://github.com/caelestia-dots/caelestia.git ~/.local/share/caelestia
+git clone https://github.com/Nyks45/caelestia.git ~/.local/share/caelestia
 ~/.local/share/caelestia/install.fish
 ```
 
@@ -65,7 +66,7 @@ Dependencies:
 -   ttf-jetbrains-mono-nerd
 
 Install all dependencies and follow the installation guides of the
-[shell](https://github.com/caelestia-dots/shell) and [cli](https://github.com/caelestia-dots/cli)
+[shell](https://github.com/Nyks45/caelestia-shell) and [cli](https://github.com/Nyks45/caelestia-cli)
 to install them.
 
 > [!TIP]
