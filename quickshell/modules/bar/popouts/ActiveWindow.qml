@@ -15,6 +15,8 @@ Item {
 
     required property PopoutState popouts
 
+    property var toplevelList: Array.from(Hypr.toplevels.values)
+
     implicitWidth: Math.max(400, child.implicitWidth)
     implicitHeight: Math.max(child.implicitHeight, Tokens.padding.large * 2)
 
@@ -127,7 +129,7 @@ Item {
 
         Repeater {
             model: ScriptModel {
-                values: Array.from(Hypr.toplevels.values)
+                values: root.toplevelList
             }
 
             delegate: Item {
@@ -192,5 +194,12 @@ Item {
                 }
             }
         }
+    }
+
+    Timer {
+        interval: 300
+        running: true
+        repeat: true
+        onTriggered: root.toplevelList = Array.from(Hypr.toplevels.values)
     }
 }
