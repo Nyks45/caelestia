@@ -47,6 +47,14 @@ def show_desktop():
     with open("/tmp/caelestia-desktop-windows.json", "w") as f:
         json.dump(popout_windows, f)
 
+    mapping = {w["address"].replace("0x", ""): str(ws_id) for w in windows}
+    with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
+        json.dump(mapping, f)
+
+    popout = [{"address": w["address"].replace("0x", ""), "title": "", "class": ""} for w in windows]
+    with open("/tmp/caelestia-desktop-windows.json", "w") as f:
+        json.dump(popout, f)
+
 def restore():
     if not os.path.exists(STATE_FILE):
         return
