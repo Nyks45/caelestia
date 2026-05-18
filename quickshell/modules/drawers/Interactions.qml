@@ -202,8 +202,11 @@ CustomMouseArea {
                 visibilities.dashboard = false;
         }
 
-        // Show sidebar on hover (top-right area)
-        visibilities.sidebar = Config.sidebar.showOnHover !== false && x > width - 300 && y < height * 0.25;
+        // Show sidebar on right-edge hover, keep open while on right edge
+        if (x > width - 5 && y < height * 0.25)
+            visibilities.sidebar = true;
+        else if (!(x > width - 300))
+            visibilities.sidebar = false;
 
         // Show utilities on hover
         const showUtilities = inBottomPanel(panels.utilities, x, y, true);
