@@ -298,6 +298,9 @@ end
 if confirm-overwrite $config/quickshell/caelestia
     log 'Installing quickshell config...'
     ln -s (realpath quickshell) $config/quickshell/caelestia
+
+    # Patch system exclusion zones for unclickable edges
+    sudo sed -i 's|exclusiveZone: contentItem.Config.border.thickness|exclusiveZone: 5|' /etc/xdg/quickshell/caelestia/modules/drawers/Exclusions.qml
 end
 
 # Hyprbars
