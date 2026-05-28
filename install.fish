@@ -339,10 +339,6 @@ if confirm-overwrite $HOME/.local/share/applications/arch-update.desktop
     update-desktop-database $HOME/.local/share/applications
 end
 
-# x-terminal-emulator symlink
-log 'Setting x-terminal-emulator to foot...'
-sudo ln -sf /usr/bin/foot /usr/bin/x-terminal-emulator
-
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
     caelestia scheme set -n shadotheme
