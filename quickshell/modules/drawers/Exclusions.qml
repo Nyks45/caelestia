@@ -32,7 +32,7 @@ Scope {
     component ExclusionZone: StyledWindow {
         screen: root.screen
         name: "border-exclusion"
-        exclusiveZone: contentItem.Config.border.thickness
+        exclusiveZone: 5
         mask: Region {}
         implicitWidth: 1
         implicitHeight: 1
