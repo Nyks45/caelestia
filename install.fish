@@ -339,6 +339,14 @@ if confirm-overwrite $HOME/.local/share/applications/arch-update.desktop
     update-desktop-database $HOME/.local/share/applications
 end
 
+# Rename foot to Terminal in launcher
+if confirm-overwrite $HOME/.local/share/applications/foot.desktop
+    log 'Installing foot → Terminal desktop override...'
+    mkdir -p $HOME/.local/share/applications
+    cp (realpath local/applications/foot.desktop) $HOME/.local/share/applications/foot.desktop
+    update-desktop-database $HOME/.local/share/applications
+end
+
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
     caelestia scheme set -n shadotheme
