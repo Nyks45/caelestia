@@ -324,6 +324,21 @@ if confirm-overwrite $HOME/.local/bin/wlr-brightness
     chmod +x $HOME/.local/bin/wlr-brightness
 end
 
+# cachy-update terminal wrapper
+if confirm-overwrite $HOME/.local/bin/cachy-update
+    log 'Installing cachy-update wrapper...'
+    cp (realpath local/bin/cachy-update) $HOME/.local/bin/cachy-update
+    chmod +x $HOME/.local/bin/cachy-update
+end
+
+# cachy-update desktop override
+if confirm-overwrite $HOME/.local/share/applications/arch-update.desktop
+    log 'Installing cachy-update desktop override...'
+    mkdir -p $HOME/.local/share/applications
+    cp (realpath local/applications/arch-update.desktop) $HOME/.local/share/applications/arch-update.desktop
+    update-desktop-database $HOME/.local/share/applications
+end
+
 # x-terminal-emulator symlink
 log 'Setting x-terminal-emulator to foot...'
 sudo ln -sf /usr/bin/foot /usr/bin/x-terminal-emulator

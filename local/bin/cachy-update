@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec foot -a "cachy-update" -T "Cachy-Update" fish -C "exec arch-update"
