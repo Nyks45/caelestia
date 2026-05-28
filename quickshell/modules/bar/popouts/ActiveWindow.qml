@@ -15,7 +15,13 @@ Item {
 
     required property PopoutState popouts
 
-    property var toplevelList: Array.from(Hypr.toplevels.values)
+    property var toplevelList: Array.from(Hypr.toplevels.values).filter(c => {
+        if (!c?.address || !c?.title) return false;
+        const ws = c?.workspace;
+        if (!ws) return false;
+        const wsName = ws?.name ?? "";
+        return wsName !== "desktop" && !wsName.startsWith("special:");
+    })
     property int toplevelTick: 0
 
     Timer {
@@ -23,7 +29,14 @@ Item {
         running: true
         repeat: true
         onTriggered: {
-            root.toplevelList = Array.from(Hypr.toplevels.values).filter(c => c?.address);
+            root.toplevelList = Array.from(Hypr.toplevels.values).filter(c => {
+                if (!c?.address || !c?.title) return false;
+                const ws = c?.workspace;
+                if (!ws) return false;
+                const wsName = ws?.name ?? "";
+                if (wsName === "desktop" || wsName.startsWith("special:")) return false;
+                return true;
+            });
             root.toplevelTick++;
         }
     }
