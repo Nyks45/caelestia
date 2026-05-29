@@ -377,6 +377,66 @@ end
 
 log 'Live wallpaper configured in execs.conf (mpvpaper with panscan)'
 
+# GRUB theme (CelesteGRUB with Frieren wallpaper)
+log 'Installing CelesteGRUB theme with Frieren wallpaper...'
+cd /tmp
+rm -rf CelesteGRUB
+git clone --depth 1 https://github.com/suilven641/CelesteGRUB.git
+mkdir -p CelesteGRUB_extracted
+tar -xzf CelesteGRUB/CelesteGRUB1080p.tar.gz -C CelesteGRUB_extracted
+
+sudo rm -rf /usr/share/grub/themes/CelesteGRUB-Frieren
+sudo mkdir -p /usr/share/grub/themes/CelesteGRUB-Frieren
+sudo cp -r CelesteGRUB_extracted/CelesteGRUB1080p/* /usr/share/grub/themes/CelesteGRUB-Frieren/
+sudo cp (realpath $install_dir/grub/frieren.png) /usr/share/grub/themes/CelesteGRUB-Frieren/frieren.png
+sudo cp (realpath $install_dir/grub/theme.txt) /usr/share/grub/themes/CelesteGRUB-Frieren/theme.txt
+cd $install_dir
+
+log 'Configuring GRUB for quiet boot...'
+sudo cp -an /etc/default/grub /etc/default/grub.bak
+
+# Set GRUB theme
+if grep -q '^GRUB_THEME=' /etc/default/grub
+    sudo sed -i 's|^GRUB_THEME=.*|GRUB_THEME="/usr/share/grub/themes/CelesteGRUB-Frieren/theme.txt"|' /etc/default/grub
+else
+    echo 'GRUB_THEME="/usr/share/grub/themes/CelesteGRUB-Frieren/theme.txt"' | sudo tee -a /etc/default/grub
+end
+
+# Set quiet boot parameters
+if grep -q '^GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub
+    sudo sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 rd.udev.log_level=0 rd.systemd.show_status=false vt.global_cursor_default=0 nowatchdog nvme_load=YES"|' /etc/default/grub
+else
+    echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 rd.udev.log_level=0 rd.systemd.show_status=false vt.global_cursor_default=0 nowatchdog nvme_load=YES"' | sudo tee -a /etc/default/grub
+end
+
+# Ensure gfxterm output
+if grep -q '^GRUB_TERMINAL_OUTPUT=' /etc/default/grub
+    sudo sed -i 's/^GRUB_TERMINAL_OUTPUT=.*/GRUB_TERMINAL_OUTPUT="gfxterm"/' /etc/default/grub
+else
+    echo 'GRUB_TERMINAL_OUTPUT="gfxterm"' | sudo tee -a /etc/default/grub
+end
+
+# Fix duplicate entries by removing execute permission from backup
+if test -f /etc/grub.d/10_linux.bak
+    sudo chmod -x /etc/grub.d/10_linux.bak
+end
+
+# Update GRUB
+log 'Updating GRUB configuration...'
+if command -v update-grub >/dev/null
+    sudo update-grub
+else if command -v grub-mkconfig >/dev/null
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+else if command -v grub2-mkconfig >/dev/null
+    if test -d /sys/firmware/efi
+        sudo grub2-mkconfig -o /boot/efi/EFI/*/grub.cfg 2>/dev/null; or sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+    else
+        sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+    end
+else
+    log 'Warning: No GRUB update command found. Please update GRUB manually.'
+end
+
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
     caelestia scheme set -n shadotheme

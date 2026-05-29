@@ -1,0 +1,48 @@
+# CelesteGRUB by Suilven/Locked101 - Simplified for Frieren
+# Designed for 1080p
+
+# Global Property
+title-text: ""
+desktop-image: "frieren.png"
+desktop-color: "#242424"
+terminal-font: "Terminus Regular 14"
+terminal-box: "terminal_box_*.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
+# Show the boot menu - simplified without card pixmaps
++ boot_menu {
+  left = 48
+  top = 150
+  width = 600
+  item_font = "Renogare Regular 20"
+  item_color = "#ffffff"
+  selected_item_color = "#ff6b9d"
+  icon_width = 64
+  icon_height = 64
+  item_icon_space = 10
+  item_height = 80
+  item_spacing = 20
+  item_padding = 10
+}
+
++ image {
+  top = 120
+  left = 70%
+  file = "postcard.png"
+}
+
+# Automatic boot countdown
++ label {
+  top = 940
+  left = 48
+  width = 600
+  align = "center"
+  id = "__timeout__"
+  text = "Automatic boot in %d seconds"
+  color = "#ffffff"
+  font = "Renogare Regular 20"
+}
