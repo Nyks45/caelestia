@@ -192,20 +192,22 @@ Item {
             }
 
             Behavior on contentX {
-                Anim {}
+                Anim {
+                    type: Anim.FastSpatial
+                }
             }
         }
     }
 
     Behavior on implicitWidth {
         Anim {
-            type: Anim.EmphasizedLarge
+            type: Anim.DefaultSpatial
         }
     }
 
     Behavior on implicitHeight {
         Anim {
-            type: Anim.EmphasizedLarge
+            type: Anim.DefaultSpatial
         }
     }
 }
