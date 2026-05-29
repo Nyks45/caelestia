@@ -155,7 +155,7 @@ StyledClippingRect {
             MaterialIcon {
                 id: desktopIcon
                 anchors.centerIn: parent
-                text: "desktop_windows"
+                text: "monitor"
                 font.pointSize: Tokens.font.size.small
                 color: Colours.palette.m3onSurfaceVariant
             }
