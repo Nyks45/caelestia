@@ -20,7 +20,7 @@ StyledListView {
     highlightRangeMode: ListView.ApplyRange
     highlightFollowsCurrentItem: true
     highlightMoveDuration: LyricsService.isManualSeeking ? 0 : Tokens.anim.durations.normal
-    layer.enabled: true
+    layer.enabled: visible
     layer.effect: ShaderEffect {
         required property Item source
         property real fadeMargin: 0.5

@@ -166,6 +166,7 @@ Popup {
     // Monitor hover state
     Connections {
         function onHoveredChanged() {
+            if (!target) return;
             if (target.hovered) {
                 showTimer.start();
                 if (timeout > 0) {

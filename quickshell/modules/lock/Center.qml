@@ -120,7 +120,7 @@ ColumnLayout {
 
         focus: true
         onActiveFocusChanged: {
-            if (!activeFocus)
+            if (!activeFocus && !root.lock.unlocking)
                 forceActiveFocus();
         }
 

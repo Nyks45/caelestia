@@ -47,14 +47,6 @@ def show_desktop():
     with open("/tmp/caelestia-desktop-windows.json", "w") as f:
         json.dump(popout_windows, f)
 
-    mapping = {w["address"].replace("0x", ""): str(ws_id) for w in windows}
-    with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
-        json.dump(mapping, f)
-
-    popout = [{"address": w["address"].replace("0x", ""), "title": "", "class": ""} for w in windows]
-    with open("/tmp/caelestia-desktop-windows.json", "w") as f:
-        json.dump(popout, f)
-
 def restore():
     if not os.path.exists(STATE_FILE):
         return
@@ -80,7 +72,7 @@ def restore():
         orig_mon = entry[3] if len(entry) > 3 else None
         if orig_mon:
             hyprctl("dispatch", "focusmonitor", orig_mon)
-        hyprctl("dispatch", f"movetoworkspacesilent {orig_ws},address:{addr}")
+        hyprctl("dispatch", "movetoworkspacesilent", f"{orig_ws},address:{addr}")
         time.sleep(0.05)
 
 if __name__ == "__main__":

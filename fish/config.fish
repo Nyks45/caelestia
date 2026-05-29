@@ -45,6 +45,6 @@ if status is-interactive
 end
 
 # opencode
-fish_add_path /home/hakan/.opencode/bin
+fish_add_path $HOME/.opencode/bin
 
-fish_add_path /home/hakan/.spicetify
+fish_add_path $HOME/.spicetify

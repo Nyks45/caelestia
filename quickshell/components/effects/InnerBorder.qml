@@ -17,7 +17,7 @@ StyledRect {
     anchors.fill: parent
     color: Colours.tPalette.m3surfaceContainer
 
-    layer.enabled: true
+    layer.enabled: visible
     layer.effect: MultiEffect {
         maskSource: mask
         maskEnabled: true

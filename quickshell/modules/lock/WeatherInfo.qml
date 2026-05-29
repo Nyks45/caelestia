@@ -169,10 +169,13 @@ ColumnLayout {
     }
 
     Timer {
+        id: weatherTimer
         running: true
         triggeredOnStart: true
         repeat: true
         interval: 900000 // 15 minutes
         onTriggered: Weather.reload()
     }
+
+    Component.onDestruction: weatherTimer.stop()
 }

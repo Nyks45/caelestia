@@ -66,13 +66,13 @@ Item {
                         // Set network immediately if available
                         if ((networkPopout.item as Network)?.passwordNetwork) {
                             if (passwordPopout.item) {
-                                (passwordPopout.item as WirelessPassword).network = (networkPopout.item as Network).passwordNetwork;
+                                (passwordPopout.item as WirelessPassword).network = (networkPopout.item as Network)?.passwordNetwork ?? null;
                             }
                         }
                         // Also try after a short delay in case networkPopout.item wasn't ready
                         Qt.callLater(() => {
                             if (passwordPopout.item && (networkPopout.item as Network)?.passwordNetwork) {
-                                (passwordPopout.item as WirelessPassword).network = (networkPopout.item as Network).passwordNetwork;
+                                (passwordPopout.item as WirelessPassword).network = (networkPopout.item as Network)?.passwordNetwork ?? null;
                             }
                         }, 100);
                     }
@@ -87,7 +87,7 @@ Item {
                     if (root.popouts.currentName === "wirelesspassword" && passwordPopout.item) {
                         Qt.callLater(() => {
                             if ((networkPopout.item as Network)?.passwordNetwork) {
-                                (passwordPopout.item as WirelessPassword).network = (networkPopout.item as Network).passwordNetwork;
+                                (passwordPopout.item as WirelessPassword).network = (networkPopout.item as Network)?.passwordNetwork ?? null;
                             }
                         });
                     }

@@ -130,8 +130,10 @@ Item {
 
             Connections {
                 function onLauncherChanged(): void {
-                    if (!root.visibilities.launcher)
+                    if (!root.visibilities.launcher) {
                         search.text = "";
+                        search.focus = false;
+                    }
                 }
 
                 function onSessionChanged(): void {

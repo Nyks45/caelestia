@@ -281,7 +281,8 @@ if set -q _flag_zen
         log 'Installing zen native app manifest...'
         mkdir -p $hosts
         cp zen/native_app/manifest.json $hosts/caelestiafox.json
-        sed -i "s|{{ \$lib }}|$lib|g" $hosts/caelestiafox.json
+        set -l lib_escaped (string replace --all '\\' '\\\\' -- $lib | string replace --all '|' '\\|' | string replace --all '&' '\\&')
+        sed -i "s|{{ \$lib }}|$lib_escaped|g" $hosts/caelestiafox.json
     end
 
     if confirm-overwrite $lib/caelestiafox
