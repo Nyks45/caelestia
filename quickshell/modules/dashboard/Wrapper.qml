@@ -31,10 +31,6 @@ Item {
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
 
-    // Cached slide distance — stable throughout animation.
-    // Seeded to 300 so the first-ever open already has a plausible offset;
-    // updated to the real height once the panel is fully shown.
-    property real _slideFrom: 300
     // Keep content alive after first open so re-opens are instant and smooth.
     property bool _everOpened: false
 
@@ -44,16 +40,9 @@ Item {
     opacity: 1 - offsetScale
 
     // GPU transform — slides the panel up when hiding without touching layout.
-    // Replaces anchors.topMargin which was a layout property that forced full
-    // sibling re-measurement on every animation frame.
-    transform: Translate { y: -root._slideFrom * root.offsetScale }
-
-    // Capture the real height once the panel is fully open so the next
-    // open/close cycle uses an accurate slide distance from the start.
-    onImplicitHeightChanged: {
-        if (implicitHeight > 0 && shouldBeActive)
-            _slideFrom = implicitHeight + 5;
-    }
+    // Reading implicitHeight here does NOT trigger layout recalculation;
+    // only writing to layout properties (anchors, Layout.*) does.
+    transform: Translate { y: -(root.implicitHeight + 5) * root.offsetScale }
 
     onShouldBeActiveChanged: {
         if (shouldBeActive)
