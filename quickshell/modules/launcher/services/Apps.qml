@@ -1,6 +1,7 @@
 pragma Singleton
 
 import Quickshell
+import Quickshell.Io
 import Caelestia
 import Caelestia.Config
 import qs.utils
@@ -10,6 +11,10 @@ Searcher {
 
     function launch(entry: DesktopEntry): void {
         appDb.incrementFrequency(entry.id);
+
+        const d = Object.assign({}, usagePrefs.data);
+        d[entry.id] = { count: (d[entry.id]?.count ?? 0) + 1, lastUsed: Date.now() };
+        usagePrefs.data = d;
 
         if (entry.runInTerminal)
             Quickshell.execDetached({
@@ -21,6 +26,13 @@ Searcher {
                 command: ["app2unit", "--", ...entry.command],
                 workingDirectory: entry.workingDirectory
             });
+    }
+
+    function frecencyScore(id: string): real {
+        const d = usagePrefs.data[id];
+        if (!d) return 0;
+        const daysSince = (Date.now() - d.lastUsed) / 86400000;
+        return d.count / (daysSince + 1);
     }
 
     function search(search: string): list<var> {
@@ -51,8 +63,11 @@ Searcher {
             keys = ["name"];
             weights = [1];
 
-            if (!search.startsWith(`${prefix}t `))
+            if (!search.startsWith(`${prefix}t `)) {
+                if (search === "")
+                    return [...appDb.apps].sort((a, b) => frecencyScore(b.id) - frecencyScore(a.id));
                 return query(search).map(e => e.entry);
+            }
         }
 
         const results = query(search.slice(prefix.length + 2)).map(e => e.entry);
@@ -74,5 +89,13 @@ Searcher {
         path: `${Paths.state}/apps.sqlite`
         favouriteApps: GlobalConfig.launcher.favouriteApps
         entries: DesktopEntries.applications.values.filter(a => !Strings.testRegexList(GlobalConfig.launcher.hiddenApps, a.id))
+    }
+
+    PersistentProperties {
+        id: usagePrefs
+
+        property var data: ({})
+
+        reloadableId: "launcher-frecency"
     }
 }

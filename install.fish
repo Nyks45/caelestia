@@ -185,6 +185,14 @@ if confirm-overwrite $config/fish
     ln -s (realpath fish) $config/fish
 end
 
+# Create user-config.fish scaffold if not present
+set -l user_fish $config/caelestia/user-config.fish
+if ! test -f $user_fish
+    log 'Creating user-config.fish scaffold...'
+    mkdir -p $config/caelestia
+    printf '# Personal Fish shell config — sourced by Caelestia on every shell start.\n# Add your aliases, env vars, PATH entries, and functions here.\n' > $user_fish
+end
+
 # Fastfetch
 if confirm-overwrite $config/fastfetch
     log 'Installing fastfetch config...'

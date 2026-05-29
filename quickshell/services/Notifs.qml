@@ -109,7 +109,9 @@ Singleton {
         path: `${Paths.state}/notifs.json`
         onLoaded: {
             const data = JSON.parse(text());
-            for (const notif of data)
+            const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+            const pruned = data.filter(n => (n.time ?? 0) >= cutoff).slice(0, 500);
+            for (const notif of pruned)
                 root.list.push(notifComp.createObject(root, notif));
             root.list.sort((a, b) => b.time - a.time);
             root.loaded = true;

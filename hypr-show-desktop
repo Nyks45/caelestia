@@ -1,25 +1,49 @@
 #!/usr/bin/env python3
 import json
-import subprocess
 import os
+import subprocess
+import tempfile
 import time
 
 STATE_FILE = "/tmp/caelestia-show-desktop.json"
+MAPPING_FILE = "/tmp/caelestia-desktop-mapping.json"
+WINDOWS_FILE = "/tmp/caelestia-desktop-windows.json"
 
 def hyprctl(*args):
     subprocess.run(["hyprctl"] + list(args), capture_output=True)
 
 def get_json(cmd):
-    return json.loads(subprocess.run(["hyprctl", cmd, "-j"], capture_output=True, text=True).stdout)
+    result = subprocess.run(["hyprctl", cmd, "-j"], capture_output=True, text=True)
+    if result.returncode != 0:
+        return None
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return None
+
+def write_atomic(path, data):
+    dir_ = os.path.dirname(path) or "/tmp"
+    with tempfile.NamedTemporaryFile("w", dir=dir_, delete=False, suffix=".tmp") as f:
+        json.dump(data, f)
+        tmp = f.name
+    os.replace(tmp, path)
 
 def show_desktop():
     active = get_json("activeworkspace")
+    if not active:
+        return
     ws_id = active["id"]
     mon_id = active["monitorID"]
     mon_name = active["monitor"]
 
     clients = get_json("clients")
-    windows = [(c["address"], ws_id, mon_id, mon_name, c.get("at", [0, 0]), c.get("size", [0, 0]), c.get("floating", False)) for c in clients if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]]
+    if not clients:
+        return
+    windows = [
+        (c["address"], ws_id, mon_id, mon_name, c.get("at", [0, 0]), c.get("size", [0, 0]), c.get("floating", False))
+        for c in clients
+        if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]
+    ]
 
     if not windows:
         return
@@ -27,45 +51,45 @@ def show_desktop():
     cmds = [f"dispatch movetoworkspacesilent name:desktop,address:{addr}" for addr, *rest in windows]
     hyprctl("--batch", ";".join(cmds))
 
-    with open(STATE_FILE, "w") as f:
-        json.dump({"windows": windows, "workspace": ws_id}, f)
+    write_atomic(STATE_FILE, {"windows": windows, "workspace": ws_id})
 
-    # Write address → original workspace mapping for workspace dot icons
     mapping = {addr.replace("0x", ""): str(orig_ws) for addr, orig_ws, *_ in windows}
-    with open("/tmp/caelestia-desktop-mapping.json", "w") as f:
-        json.dump(mapping, f)
+    write_atomic(MAPPING_FILE, mapping)
 
-    # Write window details for the popout window list
-    popout_windows = []
-    for c in clients:
-        if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]:
-            popout_windows.append({
-                "address": c["address"].replace("0x", ""),
-                "title": c.get("title", ""),
-                "class": c.get("class", "")
-            })
-    with open("/tmp/caelestia-desktop-windows.json", "w") as f:
-        json.dump(popout_windows, f)
+    popout_windows = [
+        {"address": c["address"].replace("0x", ""), "title": c.get("title", ""), "class": c.get("class", "")}
+        for c in clients
+        if c["workspace"]["id"] == ws_id and not c["hidden"] and c["mapped"]
+    ]
+    write_atomic(WINDOWS_FILE, popout_windows)
 
 def restore():
     if not os.path.exists(STATE_FILE):
         return
 
-    with open(STATE_FILE) as f:
-        state = json.load(f)
+    try:
+        with open(STATE_FILE) as f:
+            state = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        try:
+            os.remove(STATE_FILE)
+        except OSError:
+            pass
+        return
 
     windows = state.get("windows", [])
     ws_id = state.get("workspace", 1)
 
     os.remove(STATE_FILE)
-    for f in ["/tmp/caelestia-desktop-mapping.json", "/tmp/caelestia-desktop-windows.json"]:
-        if os.path.exists(f):
-            os.remove(f)
+    for path in [MAPPING_FILE, WINDOWS_FILE]:
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
 
     if not windows:
         return
 
-    # Restore each window to its original workspace on its original monitor
     for entry in windows:
         addr = entry[0]
         orig_ws = entry[1] if len(entry) > 1 else ws_id
