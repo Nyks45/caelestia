@@ -353,7 +353,7 @@ $aur_helper -S --needed sddm-astronaut-theme $noconfirm
 log 'Configuring SDDM astronaut theme...'
 sudo mkdir -p /etc/sddm.conf.d
 sudo cp (realpath sddm/astronaut.conf) /etc/sddm.conf.d/astronaut.conf
-sudo sed -i 's/ScreenHeight="1080"/ScreenHeight="1440"/' /usr/share/sddm/themes/sddm-astronaut-theme/Themes/astronaut.conf
+sudo sed -i 's/ScreenWidth="1920"/ScreenWidth="2560"/; s/ScreenHeight="1080"/ScreenHeight="1440"/' /usr/share/sddm/themes/sddm-astronaut-theme/Themes/astronaut.conf
 
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
