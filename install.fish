@@ -336,6 +336,15 @@ if confirm-overwrite $HOME/.local/share/applications/foot.desktop
     update-desktop-database $HOME/.local/share/applications
 end
 
+# SDDM astronaut theme
+log 'Installing sddm-astronaut-theme...'
+$aur_helper -S --needed sddm-astronaut-theme $noconfirm
+
+log 'Configuring SDDM astronaut theme...'
+sudo mkdir -p /etc/sddm.conf.d
+sudo cp (realpath sddm/astronaut.conf) /etc/sddm.conf.d/astronaut.conf
+sudo sed -i 's/ScreenHeight="1080"/ScreenHeight="1200"/' /usr/share/sddm/themes/sddm-astronaut-theme/Themes/astronaut.conf
+
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
     caelestia scheme set -n shadotheme
