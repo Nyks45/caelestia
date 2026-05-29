@@ -154,8 +154,7 @@ Item {
         enabled: root.visibilities.launcher
 
         Anim {
-            duration: Tokens.anim.durations.large
-            easing: Tokens.anim.emphasizedDecel
+            type: Anim.DefaultSpatial
         }
     }
 
@@ -163,8 +162,7 @@ Item {
         enabled: root.visibilities.launcher
 
         Anim {
-            duration: Tokens.anim.durations.large
-            easing: Tokens.anim.emphasizedDecel
+            type: Anim.DefaultSpatial
         }
     }
 }
