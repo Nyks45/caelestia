@@ -6,6 +6,7 @@ import "components/workspaces"
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Caelestia
 import Caelestia.Config
 import qs.components
 import qs.services
@@ -94,6 +95,7 @@ ColumnLayout {
                 Audio.incrementVolume();
             else if (angleDelta.y < 0)
                 Audio.decrementVolume();
+            Qt.callLater(() => Toaster.toast(qsTr("Volume"), `${Math.round(Audio.volume * 100)}%`, Audio.muted ? "volume_off" : "volume_up"));
         } else if (Config.bar.scrollActions.brightness) {
             // Brightness scroll on bottom half
             const monitor = Brightness.getMonitorForScreen(screen);
@@ -101,6 +103,10 @@ ColumnLayout {
                 monitor.setBrightness(monitor.brightness + GlobalConfig.services.brightnessIncrement);
             else if (angleDelta.y < 0)
                 monitor.setBrightness(monitor.brightness - GlobalConfig.services.brightnessIncrement);
+            Qt.callLater(() => {
+                const m = Brightness.getMonitorForScreen(screen);
+                if (m) Toaster.toast(qsTr("Brightness"), `${Math.round(m.brightness * 100)}%`, "brightness_medium");
+            });
         }
     }
 

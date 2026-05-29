@@ -48,6 +48,13 @@ end
 
 function confirm-overwrite -a path
     if test -e $path -o -L $path
+        # Already a correct symlink pointing into our install dir — skip silently
+        if test -L $path
+            set -l target (realpath (readlink $path) 2>/dev/null)
+            if string match -q "$install_dir*" "$target"
+                return 1
+            end
+        end
         # No prompt if noconfirm
         if set -q noconfirm
             input "$path already exists. Overwrite? [Y/n]"

@@ -9,10 +9,33 @@ Singleton {
 
     property alias enabled: props.enabled
     readonly property alias enabledSince: props.enabledSince
+    property real disableAt: 0
 
     onEnabledChanged: {
-        if (enabled)
+        if (enabled) {
             props.enabledSince = new Date();
+        } else {
+            disableAt = 0;
+        }
+    }
+
+    function enableFor(minutes: int): void {
+        props.enabled = true;
+        disableAt = Date.now() + minutes * 60000;
+        autoDisableTimer.restart();
+    }
+
+    Timer {
+        id: autoDisableTimer
+
+        interval: 30000
+        repeat: true
+        running: root.disableAt > 0 && root.enabled
+        onTriggered: {
+            if (Date.now() >= root.disableAt) {
+                root.enabled = false;
+            }
+        }
     }
 
     PersistentProperties {
@@ -49,6 +72,10 @@ Singleton {
 
         function disable(): void {
             props.enabled = false;
+        }
+
+        function enableFor(minutes: int): void {
+            root.enableFor(minutes);
         }
 
         target: "idleInhibitor"

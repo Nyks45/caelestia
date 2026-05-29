@@ -119,6 +119,11 @@ Singleton {
         hadKeyboard = !!keyboard;
     }
 
+    onActiveWsIdChanged: {
+        if (GlobalConfig.utilities.toasts.workspaceSwitch ?? false)
+            Toaster.toast(qsTr("Workspace %1").arg(activeWsId), "", "grid_view");
+    }
+
     Connections {
         function onRawEvent(event: HyprlandEvent): void {
             const n = event.name;

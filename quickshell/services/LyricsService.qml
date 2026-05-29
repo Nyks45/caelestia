@@ -91,6 +91,9 @@ Singleton {
         root.currentRequestId++;
         let requestId = root.currentRequestId;
 
+        if (findLyricsInSubdirs.running)
+            findLyricsInSubdirs.running = false;
+
         let key = _metaKey(meta);
         let saved = root.lyricsMap[key];
         root.offset = saved?.offset ?? 0.0;
