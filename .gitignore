@@ -1,4 +1,6 @@
+# Generated / runtime files
 /hypr/scheme/current.conf
+/hypr/hyprland-gui.conf
 
 /spicetify/config-xpui.ini
 /spicetify/Themes/caelestia/color.ini
@@ -10,3 +12,25 @@
 /fish/conf.d/
 
 .SRCINFO
+
+# User-local overrides — personal config, not for the repo
+user-*.fish
+*.local
+*.local.json
+local/
+
+# Secrets / credentials
+.env
+.env.*
+secrets/
+*_secret*
+*_token*
+*_key*
+
+# App usage / state databases (personal data)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Logs
+*.log
