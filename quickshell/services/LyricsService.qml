@@ -63,7 +63,7 @@ Singleton {
         };
         // reassign to notify QML bindings of the map change
         root.lyricsMap = root.lyricsMap;
-        saveLyricsMap.command = ["sh", "-c", `mkdir -p "${root.lyricsDir}" && echo '${JSON.stringify(root.lyricsMap).replace(/'/g, "'\\''")}' > "${root.lyricsMapFile}"`];
+        saveLyricsMap.command = ["sh", "-c", 'mkdir -p "$1" && printf "%s" "$2" > "$3"', "--", root.lyricsDir, JSON.stringify(root.lyricsMap), root.lyricsMapFile];
         saveLyricsMap.running = true;
     }
 
@@ -367,7 +367,7 @@ Singleton {
     Process {
         id: saveLyricsMap
 
-        command: ["sh", "-c", `mkdir -p "${root.lyricsDir}" && echo '${JSON.stringify(root.lyricsMap)}' > "${root.lyricsMapFile}"`]
+        command: ["sh", "-c", 'mkdir -p "$1" && printf "%s" "$2" > "$3"', "--", root.lyricsDir, JSON.stringify(root.lyricsMap), root.lyricsMapFile]
     }
 
     Process {

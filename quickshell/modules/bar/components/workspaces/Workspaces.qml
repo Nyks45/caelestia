@@ -34,14 +34,12 @@ StyledClippingRect {
     property real blur: onSpecial ? 1 : 0
     property var desktopWinMap: ({})
 
-    Process {
+    FileView {
         id: mapReader
-        command: ["cat", "/tmp/caelestia-desktop-mapping.json"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                try { root.desktopWinMap = JSON.parse(text); }
-                catch (e) { root.desktopWinMap = {}; }
-            }
+        path: "/tmp/caelestia-desktop-mapping.json"
+        onLoaded: {
+            try { root.desktopWinMap = JSON.parse(text()); }
+            catch (e) { root.desktopWinMap = {}; }
         }
     }
 
@@ -49,7 +47,7 @@ StyledClippingRect {
         interval: 1000
         running: true
         repeat: true
-        onTriggered: mapReader.running = true
+        onTriggered: mapReader.reload()
     }
 
     implicitWidth: Tokens.sizes.bar.innerWidth

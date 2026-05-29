@@ -46,7 +46,8 @@ ColumnLayout {
         const top = ch.y;
 
         if (id === "statusIcons" && Config.bar.popouts.statusIcons) {
-            const items = (ch.item as StatusIcons).items;
+            const items = (ch.item as StatusIcons)?.items;
+            if (!items) return;
             const icon = items.childAt(items.width / 2, mapToItem(items, 0, y).y);
             if (icon) {
                 popouts.currentName = icon.name;
@@ -55,7 +56,8 @@ ColumnLayout {
             }
         } else if (id === "tray" && Config.bar.popouts.tray) {
             const tray = ch.item as Tray;
-            if (!Config.bar.tray.compact || (tray.expanded && !tray.expandIcon.contains(mapToItem(tray.expandIcon, tray.implicitWidth / 2, y)))) {
+            if (!tray) return;
+            if (!Config.bar.tray.compact || (tray.expanded && !tray.expandIcon?.contains(mapToItem(tray.expandIcon, tray.implicitWidth / 2, y)))) {
                 const index = Math.floor(((y - top - tray.padding * 2 + tray.spacing) / tray.layout.implicitHeight) * tray.items.count);
                 const trayItem = tray.items.itemAt(index);
                 if (trayItem) {

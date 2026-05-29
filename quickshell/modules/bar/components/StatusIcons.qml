@@ -117,7 +117,7 @@ StyledRect {
 
         // Microphone icon
         WrappedLoader {
-            name: "audio"
+            name: "microphone"
             active: Config.bar.status.showMicrophone
 
             sourceComponent: MaterialIcon {
@@ -205,6 +205,7 @@ StyledRect {
 
                         SequentialAnimation on opacity {
                             running: device.modelData?.state !== BluetoothDeviceState.Connected // qmllint disable unresolved-type
+                            paused: !device.visible
                             alwaysRunToEnd: true
                             loops: Animation.Infinite
 

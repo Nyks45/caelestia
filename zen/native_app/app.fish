@@ -13,8 +13,14 @@ set -q XDG_STATE_HOME && set -l state $XDG_STATE_HOME || set -l state $HOME/.loc
 set -l state_dir $state/caelestia
 set -l scheme_path $state_dir/scheme.json
 
-message (jq -c . $scheme_path)
+function send_scheme -a path
+    test -f $path; or return
+    set -l msg (jq -c . $path 2>/dev/null); or return
+    message $msg
+end
+
+send_scheme $scheme_path
 
 inotifywait -q -e 'close_write,moved_to,create' -m $state_dir | while read dir events file
-    test "$dir$file" = $scheme_path && message (jq -c . $scheme_path)
+    test "$dir$file" = $scheme_path; and send_scheme $scheme_path
 end

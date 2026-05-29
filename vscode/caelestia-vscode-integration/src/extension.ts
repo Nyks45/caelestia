@@ -16,30 +16,33 @@ const update = async () => {
         return;
     }
 
-    // Update theme colours with scheme
-    const scheme = JSON.parse(await readFile(schemePath, "utf-8"));
-    const colours = Object.fromEntries(Object.entries(scheme.colours).map(([n, c]) => [n, `#${c}`]));
-    await writeFile(join(__dirname, "..", "themes", "caelestia.json"), JSON.stringify(theme(colours)));
+    try {
+        const scheme = JSON.parse(await readFile(schemePath, "utf-8"));
+        const colours = Object.fromEntries(Object.entries(scheme.colours).map(([n, c]) => [n, `#${c}`]));
+        await writeFile(join(__dirname, "..", "themes", "caelestia.json"), JSON.stringify(theme(colours)));
 
-    // Sync icon theme
-    const workbench = workspace.getConfiguration("workbench");
-    if (
-        workbench.get("colorTheme") === "Caelestia" &&
-        /catppuccin-(latte|frappe|macchiato|mocha)/.test(workbench.get("iconTheme") ?? "") &&
-        extensions.getExtension("catppuccin.catppuccin-vsc-icons")
-    ) {
-        workbench.update(
-            "iconTheme",
-            `catppuccin-${scheme.mode === "light" ? "latte" : "mocha"}`,
-            ConfigurationTarget.Global
-        );
+        // Sync icon theme
+        const workbench = workspace.getConfiguration("workbench");
+        if (
+            workbench.get("colorTheme") === "Caelestia" &&
+            /catppuccin-(latte|frappe|macchiato|mocha)/.test(workbench.get("iconTheme") ?? "") &&
+            extensions.getExtension("catppuccin.catppuccin-vsc-icons")
+        ) {
+            await workbench.update(
+                "iconTheme",
+                `catppuccin-${scheme.mode === "light" ? "latte" : "mocha"}`,
+                ConfigurationTarget.Global
+            );
+        }
+
+        console.log("Updated scheme.");
+    } catch (e) {
+        console.error("Failed to update scheme:", e);
     }
-
-    console.log("Updated scheme.");
 };
 
-export const activate = (context: ExtensionContext) => {
-    update();
+export const activate = async (context: ExtensionContext) => {
+    await update();
     const watcher = workspace.createFileSystemWatcher(new RelativePattern(getSchemeDir(), "scheme.json"));
     context.subscriptions.push(watcher, watcher.onDidCreate(update), watcher.onDidChange(update));
     console.log(`Watching for changes to ${getSchemePath()}`);

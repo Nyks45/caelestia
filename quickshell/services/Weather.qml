@@ -25,8 +25,13 @@ Singleton {
     readonly property string sunset: cc ? Qt.formatDateTime(new Date(cc.sunset), GlobalConfig.services.useTwelveHourClock ? "h:mm A" : "h:mm") : "--:--"
 
     readonly property var cachedCities: new Map()
+    property bool _loading: false
 
     function reload(): void {
+        if (_loading)
+            return;
+        _loading = true;
+
         const configLocation = GlobalConfig.services.weatherLocation;
 
         if (configLocation) {
@@ -36,6 +41,7 @@ Singleton {
             } else {
                 fetchCoordsFromCity(configLocation);
             }
+            _loading = false;
         } else if (!loc || timer.elapsed() > 900) {
             Requests.get("https://ipinfo.io/json", text => {
                 const response = JSON.parse(text);
@@ -44,7 +50,10 @@ Singleton {
                     city = response.city ?? "";
                     timer.restart();
                 }
+                root._loading = false;
             });
+        } else {
+            _loading = false;
         }
     }
 
@@ -96,8 +105,8 @@ Singleton {
                 city = result.name;
             } else {
                 loc = "";
-                reload();
             }
+            root._loading = false;
         });
     }
 
