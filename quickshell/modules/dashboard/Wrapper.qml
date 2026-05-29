@@ -28,15 +28,37 @@ Item {
         }
     }
 
-    readonly property real nonAnimHeight: state === "visible" ? ((content.item as Content)?.nonAnimHeight ?? 0) : 0
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
 
+    // Cached slide distance — stable throughout animation.
+    // Seeded to 300 so the first-ever open already has a plausible offset;
+    // updated to the real height once the panel is fully shown.
+    property real _slideFrom: 300
+    // Keep content alive after first open so re-opens are instant and smooth.
+    property bool _everOpened: false
+
     visible: offsetScale < 1
-    anchors.topMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight
-    implicitWidth: content.implicitWidth || 854 // Hard coded fallback for first open
+    implicitWidth: content.implicitWidth || 854
     opacity: 1 - offsetScale
+
+    // GPU transform — slides the panel up when hiding without touching layout.
+    // Replaces anchors.topMargin which was a layout property that forced full
+    // sibling re-measurement on every animation frame.
+    transform: Translate { y: -root._slideFrom * root.offsetScale }
+
+    // Capture the real height once the panel is fully open so the next
+    // open/close cycle uses an accurate slide distance from the start.
+    onImplicitHeightChanged: {
+        if (implicitHeight > 0 && shouldBeActive)
+            _slideFrom = implicitHeight + 5;
+    }
+
+    onShouldBeActiveChanged: {
+        if (shouldBeActive)
+            _everOpened = true;
+    }
 
     Behavior on offsetScale {
         Anim {
@@ -50,7 +72,8 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
 
-        active: root.shouldBeActive || root.visible
+        asynchronous: true
+        active: root.shouldBeActive || root.visible || root._everOpened
 
         sourceComponent: Content {
             visibilities: root.visibilities
