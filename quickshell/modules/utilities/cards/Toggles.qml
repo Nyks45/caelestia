@@ -154,8 +154,8 @@ StyledRect {
 
     component Toggle: IconButton {
         Layout.fillWidth: true
-        Layout.preferredWidth: implicitWidth + (stateLayer.pressed ? Tokens.padding.large : internalChecked ? Tokens.padding.smaller : 0)
-        radius: stateLayer.pressed ? Tokens.rounding.small / 2 : internalChecked ? Tokens.rounding.small : Tokens.rounding.normal
+        Layout.preferredWidth: implicitWidth + (internalChecked ? Tokens.padding.smaller : 0)
+        radius: internalChecked ? Tokens.rounding.small : Tokens.rounding.normal
         inactiveColour: Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
         toggle: true
         radiusAnim.duration: Tokens.anim.durations.expressiveFastSpatial

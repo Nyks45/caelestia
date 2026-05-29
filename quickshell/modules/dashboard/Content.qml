@@ -60,6 +60,10 @@ Item {
     implicitWidth: nonAnimWidth
     implicitHeight: nonAnimHeight
 
+    Behavior on implicitHeight {
+        Anim { type: Anim.DefaultSpatial }
+    }
+
     Tabs {
         id: tabs
 
