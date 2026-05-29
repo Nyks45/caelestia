@@ -156,7 +156,8 @@ StyledRect {
             Behavior on scale { Anim {} }
         }
 
-        Behavior on implicitHeight { Anim { type: Anim.DefaultSpatial } }
+        // No Behavior here — card's own implicitHeight Behavior handles the smooth resize.
+        // A second Behavior on the same chain causes competing animations (jitter).
     }
 
     Behavior on implicitHeight {
