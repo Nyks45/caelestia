@@ -336,6 +336,12 @@ if confirm-overwrite $HOME/.local/share/applications/foot.desktop
     update-desktop-database $HOME/.local/share/applications
 end
 
+# hypr-show-desktop script
+mkdir -p $HOME/.local/bin
+log 'Installing hypr-show-desktop script...'
+cp (realpath hypr-show-desktop) $HOME/.local/bin/hypr-show-desktop
+chmod +x $HOME/.local/bin/hypr-show-desktop
+
 # SDDM astronaut theme
 log 'Installing sddm-astronaut-theme...'
 $aur_helper -S --needed sddm-astronaut-theme $noconfirm
