@@ -26,6 +26,18 @@ Singleton {
 
     readonly property var cachedCities: new Map()
     property bool _loading: false
+    property real lastFetchedAt: 0
+    property real _now: Date.now()
+
+    readonly property bool isStale: cc !== null && (_now - lastFetchedAt) > 7200000
+    readonly property int minutesSinceFetch: cc !== null ? Math.floor((_now - lastFetchedAt) / 60000) : -1
+
+    Timer {
+        interval: 60000
+        running: root.cc !== null
+        repeat: true
+        onTriggered: root._now = Date.now()
+    }
 
     function reload(): void {
         if (_loading)
@@ -120,6 +132,8 @@ Singleton {
             if (!json.current || !json.daily)
                 return;
 
+            root.lastFetchedAt = Date.now();
+            root._now = root.lastFetchedAt;
             cc = {
                 weatherCode: json.current.weather_code,
                 weatherDesc: getWeatherCondition(json.current.weather_code),
