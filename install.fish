@@ -346,14 +346,37 @@ chmod +x $HOME/.local/bin/hypr-show-desktop
 log 'Syncing quickshell to system path...'
 sudo rsync -a (realpath quickshell)/ /etc/xdg/quickshell/caelestia/
 
-# SDDM astronaut theme
-log 'Installing sddm-astronaut-theme...'
-$aur_helper -S --needed sddm-astronaut-theme $noconfirm
+# SDDM astronaut theme (custom fork with Frieren themes)
+log 'Installing sddm-astronaut-theme from custom fork...'
+cd /tmp
+rm -rf sddm-astronaut-theme
+git clone https://github.com/Nyks45/sddm-astronaut-theme.git
+sudo rm -rf /usr/share/sddm/themes/sddm-astronaut-theme
+sudo cp -r sddm-astronaut-theme /usr/share/sddm/themes/sddm-astronaut-theme
+sudo cp -r /usr/share/sddm/themes/sddm-astronaut-theme/Fonts/* /usr/share/fonts/ 2>/dev/null; or true
+cd $install_dir
 
-log 'Configuring SDDM astronaut theme...'
+log 'Configuring SDDM astronaut theme with Frieren Pixel Sorcery...'
 sudo mkdir -p /etc/sddm.conf.d
 sudo cp (realpath sddm/astronaut.conf) /etc/sddm.conf.d/astronaut.conf
 sudo sed -i 's/ScreenWidth="1920"/ScreenWidth="2560"/; s/ScreenHeight="1080"/ScreenHeight="1440"/' /usr/share/sddm/themes/sddm-astronaut-theme/Themes/astronaut.conf
+sudo cp (realpath sddm/frieren_pixel_sorcery.conf) /usr/share/sddm/themes/sddm-astronaut-theme/Themes/frieren_pixel_sorcery.conf
+sudo sed -i 's|ConfigFile=Themes/.*|ConfigFile=Themes/frieren_pixel_sorcery.conf|' /usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop
+
+# Live wallpaper
+log 'Setting up live wallpaper...'
+$aur_helper -S --needed mpvpaper $noconfirm
+
+mkdir -p $HOME/Videos/wallpapers
+set -l wallpaper_url 'https://motionbgs.com/dl/hd/9032/'
+set -l wallpaper_path $HOME/Videos/wallpapers/frieren-quiet-tale.mp4
+
+if ! test -f $wallpaper_path
+    log 'Downloading Frieren Quiet Tale wallpaper...'
+    curl -L -o $wallpaper_path $wallpaper_url
+end
+
+log 'Live wallpaper configured in execs.conf (mpvpaper with panscan)'
 
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json
