@@ -313,20 +313,6 @@ hyprpm enable hyprbars
 log 'Installing gnome-text-editor, nautilus, polkit-gnome...'
 $aur_helper -S --needed gnome-text-editor nautilus polkit-gnome $noconfirm
 
-# wl-gammarelay-rs
-if ! pacman -Q wl-gammarelay-rs &> /dev/null
-    log 'Installing wl-gammarelay-rs...'
-    $aur_helper -S --needed wl-gammarelay-rs $noconfirm
-end
-
-# wlr-brightness script
-mkdir -p $HOME/.local/bin
-if confirm-overwrite $HOME/.local/bin/wlr-brightness
-    log 'Installing wlr-brightness script...'
-    cp (realpath local/bin/wlr-brightness) $HOME/.local/bin/wlr-brightness
-    chmod +x $HOME/.local/bin/wlr-brightness
-end
-
 # cachy-update terminal wrapper
 if confirm-overwrite $HOME/.local/bin/cachy-update
     log 'Installing cachy-update wrapper...'
@@ -349,6 +335,25 @@ if confirm-overwrite $HOME/.local/share/applications/foot.desktop
     cp (realpath local/applications/foot.desktop) $HOME/.local/share/applications/foot.desktop
     update-desktop-database $HOME/.local/share/applications
 end
+
+# hypr-show-desktop script
+mkdir -p $HOME/.local/bin
+log 'Installing hypr-show-desktop script...'
+cp (realpath hypr-show-desktop) $HOME/.local/bin/hypr-show-desktop
+chmod +x $HOME/.local/bin/hypr-show-desktop
+
+# Sync quickshell QML to system-installed location
+log 'Syncing quickshell to system path...'
+sudo rsync -a (realpath quickshell)/ /etc/xdg/quickshell/caelestia/
+
+# SDDM astronaut theme
+log 'Installing sddm-astronaut-theme...'
+$aur_helper -S --needed sddm-astronaut-theme $noconfirm
+
+log 'Configuring SDDM astronaut theme...'
+sudo mkdir -p /etc/sddm.conf.d
+sudo cp (realpath sddm/astronaut.conf) /etc/sddm.conf.d/astronaut.conf
+sudo sed -i 's/ScreenHeight="1080"/ScreenHeight="1440"/' /usr/share/sddm/themes/sddm-astronaut-theme/Themes/astronaut.conf
 
 # Generate scheme stuff if needed
 if ! test -f $state/caelestia/scheme.json

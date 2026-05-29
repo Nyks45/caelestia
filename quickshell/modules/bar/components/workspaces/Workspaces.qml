@@ -133,6 +133,7 @@ StyledClippingRect {
 
         Item {
             id: showDesktopButton
+            visible: true
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: layout.bottom
             anchors.topMargin: Tokens.spacing.smaller

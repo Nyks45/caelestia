@@ -137,20 +137,6 @@ Item {
             }
         }
 
-        ClippingWrapperRectangle {
-            color: "transparent"
-            radius: Tokens.rounding.small
-            visible: Hypr.activeToplevel != null
-
-            ScreencopyView {
-                id: preview
-                captureSource: Hypr.activeToplevel?.wayland ?? null // qmllint disable unresolved-type
-                live: visible
-                constraintSize.width: Tokens.sizes.bar.windowPreviewSize
-                constraintSize.height: Tokens.sizes.bar.windowPreviewSize
-            }
-        }
-
         Repeater {
             model: ScriptModel {
                 property int _tick: root.toplevelTick
