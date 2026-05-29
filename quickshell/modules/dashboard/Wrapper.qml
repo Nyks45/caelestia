@@ -28,26 +28,14 @@ Item {
         }
     }
 
+    readonly property real nonAnimHeight: state === "visible" ? ((content.item as Content)?.nonAnimHeight ?? 0) : 0
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
 
-    // Keep content alive after first open so re-opens are instant and smooth.
-    property bool _everOpened: false
-
     visible: offsetScale < 1
     implicitHeight: content.implicitHeight
-    implicitWidth: content.implicitWidth || 854
+    implicitWidth: content.implicitWidth || 854 // Hard coded fallback for first open
     opacity: 1 - offsetScale
-
-    // GPU transform — slides the panel up when hiding without touching layout.
-    // Reading implicitHeight here does NOT trigger layout recalculation;
-    // only writing to layout properties (anchors, Layout.*) does.
-    transform: Translate { y: -(root.implicitHeight + 5) * root.offsetScale }
-
-    onShouldBeActiveChanged: {
-        if (shouldBeActive)
-            _everOpened = true;
-    }
 
     Behavior on offsetScale {
         Anim {
@@ -61,8 +49,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
 
-        asynchronous: true
-        active: root.shouldBeActive || root.visible || root._everOpened
+        active: root.shouldBeActive || root.visible
 
         sourceComponent: Content {
             visibilities: root.visibilities
