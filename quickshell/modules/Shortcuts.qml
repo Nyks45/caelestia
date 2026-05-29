@@ -85,6 +85,14 @@ Scope {
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
+        name: "overviewToggle"
+        description: "Toggle window overview"
+        onPressed: Quickshell.execDetached(["hyprctl", "dispatch", "layoutmsg", "overview"])
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
         name: "hyprexpo"
         description: "Toggle hyprexpo overview"
         onPressed: Quickshell.execDetached(["hyprctl", "dispatch", "hyprexpo:expo", "toggle"])
