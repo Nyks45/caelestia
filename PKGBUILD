@@ -14,7 +14,7 @@ depends=('caelestia-cli' 'caelestia-shell'
          'wl-clipboard' 'cliphist' 'inotify-tools' 'app2unit' 'wireplumber' 'trash-cli'
          'foot' 'fish' 'eza' 'fastfetch' 'starship' 'btop' 'jq' 'adw-gtk-theme'
           'papirus-icon-theme' 'qtengine' 'ttf-jetbrains-mono-nerd'
-          'wl-gammarelay-rs' 'gnome-text-editor' 'nautilus' 'polkit-gnome')
+           'gnome-text-editor' 'nautilus' 'polkit-gnome')
 optdepends=('thunar: file manager'
             'spotify: music player'
             'vscode: code editor'

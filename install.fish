@@ -313,20 +313,6 @@ hyprpm enable hyprbars
 log 'Installing gnome-text-editor, nautilus, polkit-gnome...'
 $aur_helper -S --needed gnome-text-editor nautilus polkit-gnome $noconfirm
 
-# wl-gammarelay-rs
-if ! pacman -Q wl-gammarelay-rs &> /dev/null
-    log 'Installing wl-gammarelay-rs...'
-    $aur_helper -S --needed wl-gammarelay-rs $noconfirm
-end
-
-# wlr-brightness script
-mkdir -p $HOME/.local/bin
-if confirm-overwrite $HOME/.local/bin/wlr-brightness
-    log 'Installing wlr-brightness script...'
-    cp (realpath local/bin/wlr-brightness) $HOME/.local/bin/wlr-brightness
-    chmod +x $HOME/.local/bin/wlr-brightness
-end
-
 # cachy-update terminal wrapper
 if confirm-overwrite $HOME/.local/bin/cachy-update
     log 'Installing cachy-update wrapper...'
