@@ -18,10 +18,6 @@ Scope {
     }
 
     ExclusionZone {
-        anchors.top: true
-    }
-
-    ExclusionZone {
         anchors.right: true
     }
 
