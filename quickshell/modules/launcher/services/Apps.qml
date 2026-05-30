@@ -65,7 +65,7 @@ Searcher {
 
             if (!search.startsWith(`${prefix}t `)) {
                 if (search === "")
-                    return [...appDb.apps].sort((a, b) => frecencyScore(b.id) - frecencyScore(a.id));
+                    return [...appDb.apps].sort((a, b) => frecencyScore(b.id) - frecencyScore(a.id)).map(e => e.entry);
                 return query(search).map(e => e.entry);
             }
         }
