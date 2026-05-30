@@ -27,23 +27,11 @@ Item {
     property real offsetScale: shouldBeActive ? 0 : 1
     property real sidebarLerp
 
-    // Keep content alive after first open so re-opens are instant and smooth.
-    property bool _everOpened: false
-
     visible: offsetScale < 1
+    anchors.bottomMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight + content.anchors.margins * 2
     implicitWidth: sidebar.width * (1 - sidebar.offsetScale) * horizontalStretch * sidebarLerp + Tokens.sizes.utilities.width * (1 - sidebarLerp)
     opacity: 1 - offsetScale
-
-    // GPU transform — slides the panel down when hiding without touching layout.
-    // Reading implicitHeight here does NOT trigger layout recalculation;
-    // only writing to layout properties (anchors, Layout.*) does.
-    transform: Translate { y: (root.implicitHeight + 5) * root.offsetScale }
-
-    onShouldBeActiveChanged: {
-        if (shouldBeActive)
-            _everOpened = true;
-    }
 
     states: State {
         name: "attachedToSidebar"
@@ -89,7 +77,7 @@ Item {
         anchors.margins: Tokens.padding.large
 
         asynchronous: true
-        active: root.shouldBeActive || root.visible || root._everOpened
+        active: root.shouldBeActive || root.visible
 
         sourceComponent: Content {
             implicitWidth: root.implicitWidth - content.anchors.margins * 2
