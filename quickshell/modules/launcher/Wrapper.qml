@@ -23,6 +23,8 @@ Item {
     }
 
     property real offsetScale: shouldBeActive ? 0 : 1
+    property bool _everOpened: false
+    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     onShouldBeActiveChanged: {
         if (shouldBeActive)
@@ -51,7 +53,7 @@ Item {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root._everOpened
 
         sourceComponent: Content {
             visibilities: root.visibilities

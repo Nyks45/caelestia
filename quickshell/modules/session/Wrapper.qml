@@ -14,6 +14,8 @@ Item {
     readonly property bool shouldBeActive: visibilities.session && Config.session.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
     property real sidebarOffset: sidebarVisible ? 14 : 0
+    property bool _everOpened: false
+    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     visible: offsetScale < 1
     anchors.rightMargin: (-implicitWidth - 5 - sidebarOffset) * offsetScale
@@ -33,7 +35,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
 
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root._everOpened
 
         sourceComponent: Content {
             visibilities: root.visibilities

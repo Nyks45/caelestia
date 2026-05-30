@@ -12,6 +12,8 @@ Item {
 
     readonly property bool shouldBeActive: visibilities.sidebar && Config.sidebar.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
+    property bool _everOpened: false
+    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     visible: offsetScale < 1
     anchors.rightMargin: (-implicitWidth - 5) * offsetScale
@@ -33,7 +35,7 @@ Item {
         anchors.margins: Tokens.padding.large
         anchors.bottomMargin: 0
 
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root._everOpened
 
         sourceComponent: Content {
             implicitWidth: Tokens.sizes.sidebar.width - Tokens.padding.large * 2
