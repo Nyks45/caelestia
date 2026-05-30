@@ -31,8 +31,11 @@ Item {
     readonly property real nonAnimHeight: state === "visible" ? ((content.item as Content)?.nonAnimHeight ?? 0) : 0
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
+    property bool _everOpened: false
+    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     visible: offsetScale < 1
+    layer.enabled: offsetScale > 0
     anchors.topMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight
     implicitWidth: content.implicitWidth || 854 // Hard coded fallback for first open
@@ -50,7 +53,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
 
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root._everOpened
 
         sourceComponent: Content {
             visibilities: root.visibilities
