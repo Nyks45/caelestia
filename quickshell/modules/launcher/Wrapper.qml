@@ -23,14 +23,12 @@ Item {
     }
 
     property real offsetScale: shouldBeActive ? 0 : 1
-    property bool _everOpened: false
-    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     onShouldBeActiveChanged: {
         if (shouldBeActive)
             implicitHeight = Qt.binding(() => content.implicitHeight);
         else
-            implicitHeight = implicitHeight; // Break binding during close anim
+            implicitHeight = implicitHeight;
     }
 
     visible: offsetScale < 1
@@ -53,7 +51,7 @@ Item {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        active: root.shouldBeActive || root._everOpened
+        active: root.shouldBeActive || root.visible
 
         sourceComponent: Content {
             visibilities: root.visibilities

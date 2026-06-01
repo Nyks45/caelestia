@@ -26,8 +26,6 @@ Item {
     readonly property bool shouldBeActive: visibilities.utilities && Config.utilities.enabled && !(visibilities.session && Config.session.enabled)
     property real offsetScale: shouldBeActive ? 0 : 1
     property real sidebarLerp
-    property bool _everOpened: false
-    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     visible: offsetScale < 1
     anchors.bottomMargin: (-implicitHeight - 5) * offsetScale
@@ -78,8 +76,7 @@ Item {
         anchors.left: parent.left
         anchors.margins: Tokens.padding.large
 
-        asynchronous: true
-        active: root.shouldBeActive || root._everOpened
+        active: root.shouldBeActive || root.visible
 
         sourceComponent: Content {
             implicitWidth: root.implicitWidth - content.anchors.margins * 2

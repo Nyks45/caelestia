@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import ".."
 import "../../../launcher/services"
+import QtQml
 import QtQuick
 import QtQuick.Layouts
 import Quickshell

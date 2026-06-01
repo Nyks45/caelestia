@@ -31,8 +31,6 @@ Item {
     readonly property real nonAnimHeight: state === "visible" ? ((content.item as Content)?.nonAnimHeight ?? 0) : 0
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
-    property bool _everOpened: false
-    onShouldBeActiveChanged: if (shouldBeActive) _everOpened = true
 
     visible: offsetScale < 1
     anchors.topMargin: (-implicitHeight - 5) * offsetScale
@@ -52,7 +50,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
 
-        active: root.shouldBeActive || root._everOpened
+        active: root.shouldBeActive || root.visible
 
         sourceComponent: Content {
             visibilities: root.visibilities

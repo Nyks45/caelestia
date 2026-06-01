@@ -1,6 +1,7 @@
 pragma Singleton
 
 import "../utils/scripts/lrcparser.js" as Lrc
+import QtQml
 import QtQuick
 import Quickshell
 import Quickshell.Io
