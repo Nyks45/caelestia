@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import QtQml
 import QtQuick
 import Quickshell
 import Caelestia.Config
@@ -39,7 +40,6 @@ Item {
     }
 
     visible: offsetScale < 1
-    layer.enabled: offsetScale > 0
     anchors.rightMargin: (-implicitWidth - 5 - sidebarOffset) * offsetScale
     implicitWidth: content.implicitWidth
     implicitHeight: content.implicitHeight

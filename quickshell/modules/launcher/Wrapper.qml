@@ -28,11 +28,10 @@ Item {
         if (shouldBeActive)
             implicitHeight = Qt.binding(() => content.implicitHeight);
         else
-            implicitHeight = implicitHeight; // Break binding during close anim
+            implicitHeight = implicitHeight;
     }
 
     visible: offsetScale < 1
-    layer.enabled: offsetScale > 0
     anchors.bottomMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight
     implicitWidth: content.implicitWidth || 630 // Hard coded fallback for first open
@@ -52,7 +51,7 @@ Item {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        active: root.shouldBeActive || root._everOpened
+        active: root.shouldBeActive || root.visible
 
         sourceComponent: Content {
             visibilities: root.visibilities

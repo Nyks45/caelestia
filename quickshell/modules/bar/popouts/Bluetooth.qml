@@ -77,7 +77,6 @@ ColumnLayout {
 
             opacity: 0
             scale: 0.7
-            layer.enabled: scale < 1 || opacity < 1
 
             Component.onCompleted: {
                 opacity = 1;

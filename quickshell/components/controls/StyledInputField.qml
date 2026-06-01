@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import QtQml
 import QtQuick
 import Caelestia.Config
 import qs.components

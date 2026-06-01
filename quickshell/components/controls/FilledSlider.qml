@@ -1,4 +1,5 @@
 import "../effects"
+import QtQml
 import QtQuick
 import QtQuick.Templates
 import Caelestia.Config

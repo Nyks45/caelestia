@@ -1,6 +1,7 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
 
+import QtQml
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -184,8 +185,9 @@ Singleton {
                         const [, , , cur, max] = text.split(" ");
                         monitor.brightness = parseInt(cur) / parseInt(max);
                     } else {
-                        const [, , , cur, max] = text.split(" ");
-                        monitor.brightness = parseInt(cur) / parseInt(max);
+                        const parts = text.trim().split(" ");
+                        if (parts.length === 2 && parts[0] === "d")
+                            monitor.brightness = parseFloat(parts[1]);
                     }
                 }
             }
@@ -219,7 +221,7 @@ Singleton {
             else if (isDdc)
                 Quickshell.execDetached(["ddcutil", "-b", busNum, "setvcp", "10", rounded]);
             else
-                Quickshell.execDetached(["brightnessctl", "s", `${rounded}%`]);
+                Quickshell.execDetached(["/home/hakan/.local/bin/wlr-brightness", "set", `${value}`]);
 
             if (isDdc)
                 timer.restart();
@@ -231,7 +233,7 @@ Singleton {
             else if (isDdc)
                 initProc.command = ["ddcutil", "-b", busNum, "getvcp", "10", "--brief"];
             else
-                initProc.command = ["sh", "-c", "echo a b c $(brightnessctl g) $(brightnessctl m)"];
+                initProc.command = ["/home/hakan/.local/bin/wlr-brightness", "get"];
 
             initProc.running = true;
         }

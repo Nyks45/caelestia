@@ -8,6 +8,7 @@ import "taskbar"
 import "notifications"
 import "launcher"
 import "dashboard"
+import QtQml
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Widgets
