@@ -38,6 +38,7 @@ CollapsibleSection {
                 property alias contentHeight: sansFontList.contentHeight
 
                 clip: true
+                reuseItems: true
                 spacing: Tokens.spacing.small / 2
                 model: Qt.fontFamilies()
 
@@ -119,6 +120,7 @@ CollapsibleSection {
                 property alias contentHeight: monoFontList.contentHeight
 
                 clip: true
+                reuseItems: true
                 spacing: Tokens.spacing.small / 2
                 model: Qt.fontFamilies()
 
@@ -202,6 +204,7 @@ CollapsibleSection {
                 property alias contentHeight: materialFontList.contentHeight
 
                 clip: true
+                reuseItems: true
                 spacing: Tokens.spacing.small / 2
                 model: Qt.fontFamilies().filter(f => f.startsWith("Material Symbols"))
 

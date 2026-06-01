@@ -228,6 +228,8 @@ StyledRect {
             StyledText {
                 id: appName
 
+                layer.enabled: true
+
                 anchors.top: parent.top
                 anchors.left: image.right
                 anchors.leftMargin: Tokens.spacing.smaller
@@ -376,6 +378,8 @@ StyledRect {
 
             StyledText {
                 id: bodyPreview
+
+                layer.enabled: true
 
                 anchors.left: summary.left
                 anchors.right: expandBtn.left

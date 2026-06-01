@@ -165,6 +165,7 @@ StyledRect {
 
                     model: LyricsService.candidatesModel
                     clip: true
+                    reuseItems: true
                     spacing: Tokens.spacing.small
                     visible: LyricsService.candidatesModel.count > 0
                     opacity: visible ? 1 : 0

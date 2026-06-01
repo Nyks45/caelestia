@@ -398,6 +398,7 @@ ColumnLayout {
                     orientation: Qt.Horizontal
                     spacing: Tokens.spacing.small / 2
                     interactive: false
+                    reuseItems: true
 
                     model: ScriptModel {
                         values: passwordContainer.passwordBuffer.split("")
@@ -405,6 +406,8 @@ ColumnLayout {
 
                     delegate: StyledRect {
                         id: ch
+
+                        layer.enabled: true
 
                         implicitWidth: implicitHeight
                         implicitHeight: charList.implicitHeight

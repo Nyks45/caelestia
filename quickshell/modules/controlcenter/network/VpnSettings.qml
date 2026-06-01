@@ -55,6 +55,7 @@ ColumnLayout {
             Layout.preferredHeight: contentHeight
 
             interactive: false
+            reuseItems: true
             spacing: Tokens.spacing.smaller
 
             model: ScriptModel {

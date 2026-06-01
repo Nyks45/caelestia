@@ -38,6 +38,8 @@ Item {
         StyledText {
             id: count
 
+            layer.enabled: true
+
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.leftMargin: root.notifCount > 0 ? 0 : -width - titleText.anchors.leftMargin
@@ -90,6 +92,9 @@ Item {
         Loader {
             asynchronous: true
             anchors.centerIn: parent
+
+            layer.enabled: true
+
             active: opacity > 0
             opacity: root.notifCount > 0 ? 0 : 1
 

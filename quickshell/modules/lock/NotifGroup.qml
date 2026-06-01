@@ -171,6 +171,8 @@ StyledRect {
                     implicitWidth: expandBtn.implicitWidth + Tokens.padding.smaller * 2
                     implicitHeight: groupCount.implicitHeight + Tokens.padding.small
 
+                    layer.enabled: true
+
                     color: root.urgency === "critical" ? Colours.palette.m3error : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
                     radius: Tokens.rounding.full
 
@@ -273,6 +275,8 @@ StyledRect {
             Loader {
                 asynchronous: true
                 Layout.fillWidth: true
+
+                layer.enabled: true
 
                 opacity: root.expanded ? 1 : 0
                 Layout.preferredHeight: root.expanded ? implicitHeight : 0

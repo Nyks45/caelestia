@@ -86,6 +86,7 @@ Item {
         cellHeight: Sizes.itemWidth + Tokens.spacing.small * 2 + Tokens.padding.normal * 2 + 1
 
         clip: true
+        reuseItems: true
         focus: true
         currentIndex: -1
         Keys.onEscapePressed: currentIndex = -1

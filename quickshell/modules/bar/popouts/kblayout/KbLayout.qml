@@ -41,6 +41,7 @@ ColumnLayout {
 
         clip: true
         interactive: true
+        reuseItems: true
         implicitHeight: Math.min(contentHeight, 320)
         visible: kb.visibleModel.count > 0
         spacing: Tokens.spacing.small

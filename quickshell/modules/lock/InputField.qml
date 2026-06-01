@@ -37,6 +37,8 @@ Item {
     StyledText {
         id: placeholder
 
+        layer.enabled: true
+
         anchors.centerIn: parent
 
         text: {
@@ -79,6 +81,7 @@ Item {
         orientation: Qt.Horizontal
         spacing: Tokens.spacing.small / 2
         interactive: false
+        reuseItems: true
 
         model: ScriptModel {
             values: root.buffer.split("")
@@ -86,6 +89,8 @@ Item {
 
         delegate: StyledRect {
             id: ch
+
+            layer.enabled: true
 
             implicitWidth: implicitHeight
             implicitHeight: charList.implicitHeight

@@ -89,6 +89,7 @@ Item {
 
         anchors.fill: parent
         spacing: Tokens.spacing.normal
+        reuseItems: true
         interactive: false
 
         currentIndex: model.values.findIndex(w => w.name === root.activeSpecial)

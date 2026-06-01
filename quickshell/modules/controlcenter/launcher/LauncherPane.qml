@@ -298,6 +298,7 @@ Item {
                         model: root.filteredApps
                         spacing: Tokens.spacing.small / 2
                         clip: true
+                        reuseItems: true
 
                         StyledScrollBar.vertical: StyledScrollBar {
                             flickable: parent
