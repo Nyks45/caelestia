@@ -11,6 +11,8 @@ import qs.services
 LazyListView {
     id: root
 
+    reuseItems: true
+
     required property Props props
     required property Flickable container
     required property DrawerVisibilities visibilities

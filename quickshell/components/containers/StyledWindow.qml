@@ -7,6 +7,8 @@ PanelWindow {
     // qmllint enable uncreatable-type
     required property string name
 
+    opaque: true
+
     WlrLayershell.namespace: `caelestia-${name}`
     color: "transparent"
 

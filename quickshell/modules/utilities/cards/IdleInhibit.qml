@@ -85,6 +85,8 @@ StyledRect {
         Loader {
             id: activeChip
 
+            layer.enabled: true
+
             asynchronous: true
             opacity: IdleInhibitor.enabled ? 1 : 0
             scale: IdleInhibitor.enabled ? 1 : 0.5
@@ -117,6 +119,8 @@ StyledRect {
         // Timed preset chips (when disabled)
         Row {
             id: presetRow
+
+            layer.enabled: true
 
             spacing: Tokens.spacing.small
             opacity: IdleInhibitor.enabled ? 0 : 1

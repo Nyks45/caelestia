@@ -157,6 +157,8 @@ ColumnLayout {
                 MaterialIcon {
                     id: fprintIcon
 
+                    layer.enabled: true
+
                     anchors.centerIn: parent
                     animate: true
                     text: {
@@ -222,6 +224,8 @@ ColumnLayout {
 
         StyledText {
             id: stateMessage
+
+            layer.enabled: true
 
             readonly property string msg: {
                 if (Hypr.kbLayout !== Hypr.defaultKbLayout) {

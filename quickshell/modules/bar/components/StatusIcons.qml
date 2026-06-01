@@ -48,6 +48,8 @@ StyledRect {
                     MaterialIcon {
                         id: capslockIcon
 
+                        layer.enabled: true
+
                         anchors.centerIn: parent
 
                         scale: Hypr.capsLock ? 1 : 0.5
@@ -78,6 +80,8 @@ StyledRect {
 
                     MaterialIcon {
                         id: numlockIcon
+
+                        layer.enabled: true
 
                         anchors.centerIn: parent
 

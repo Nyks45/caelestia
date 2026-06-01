@@ -35,6 +35,8 @@ Switch {
                 anchors.fill: parent
                 radius: parent.radius
 
+                layer.enabled: true
+
                 color: root.checked ? Colours.palette.m3primary : Colours.palette.m3onSurface
                 opacity: root.pressed ? 0.1 : root.hovered ? 0.08 : 0
 

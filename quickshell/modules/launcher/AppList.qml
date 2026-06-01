@@ -13,6 +13,8 @@ import qs.modules.launcher.services
 StyledListView {
     id: root
 
+    reuseItems: true
+
     required property StyledTextField search
     required property DrawerVisibilities visibilities
 

@@ -253,6 +253,8 @@ StyledWindow {
         Panels {
             id: panels
 
+            clip: true
+
             screen: root.screen
             visibilities: visibilities
             bar: bar

@@ -84,6 +84,8 @@ ColumnLayout {
             spacing: Tokens.spacing.small
             clip: true
 
+            reuseItems: true
+
             model: ScriptModel {
                 values: {
                     const list = Notifs.notClosed.map(n => [n.appName, null]);

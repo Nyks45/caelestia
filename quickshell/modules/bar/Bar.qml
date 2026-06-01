@@ -14,6 +14,8 @@ import qs.services
 ColumnLayout {
     id: root
 
+    opaque: true
+
     required property ShellScreen screen
     required property DrawerVisibilities visibilities
     required property BarPopouts.Wrapper popouts

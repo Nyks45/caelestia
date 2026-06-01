@@ -150,6 +150,8 @@ Item {
         MaterialIcon {
             id: clearIcon
 
+            layer.enabled: true
+
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: root.padding

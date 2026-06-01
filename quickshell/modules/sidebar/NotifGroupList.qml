@@ -10,6 +10,8 @@ import qs.services
 LazyListView {
     id: root
 
+    reuseItems: true
+
     required property Props props
     required property list<var> notifs
     required property bool expanded

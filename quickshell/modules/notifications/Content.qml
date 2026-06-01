@@ -54,6 +54,8 @@ Item {
         StyledListView {
             id: list
 
+            reuseItems: true
+
             model: ScriptModel {
                 values: Notifs.popups.filter(n => !n.closed)
             }

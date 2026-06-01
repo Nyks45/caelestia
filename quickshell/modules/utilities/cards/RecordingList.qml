@@ -54,6 +54,8 @@ ColumnLayout {
     StyledListView {
         id: list
 
+        reuseItems: true
+
         model: FileSystemModel {
             path: Paths.recsdir
             nameFilters: ["recording_*.mp4"]

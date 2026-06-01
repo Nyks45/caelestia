@@ -377,6 +377,8 @@ Item {
     ColumnLayout {
         id: leftSection
 
+        layer.enabled: true
+
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: playerChanger.parent == leftSection ? -playerChanger.height : 0
         anchors.left: details.right

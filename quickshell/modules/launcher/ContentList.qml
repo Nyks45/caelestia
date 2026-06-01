@@ -107,6 +107,8 @@ Item {
     Row {
         id: empty
 
+        layer.enabled: true
+
         opacity: root.currentList?.count === 0 ? 1 : 0
         scale: root.currentList?.count === 0 ? 1 : 0.5
 
