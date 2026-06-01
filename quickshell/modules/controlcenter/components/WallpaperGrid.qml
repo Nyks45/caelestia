@@ -25,6 +25,7 @@ GridView {
     model: Wallpapers.list
 
     clip: true
+    reuseItems: true
 
     StyledScrollBar.vertical: StyledScrollBar {
         flickable: root

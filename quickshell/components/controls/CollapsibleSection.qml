@@ -89,6 +89,7 @@ ColumnLayout {
             anchors.fill: parent
             radius: Tokens.rounding.normal
             color: Colours.transparency.enabled ? Colours.layer(Colours.palette.m3surfaceContainer, root.nested ? 3 : 2) : (root.nested ? Colours.palette.m3surfaceContainerHigh : Colours.palette.m3surfaceContainer)
+            layer.enabled: true
             opacity: root.showBackground && root.expanded ? 1.0 : 0.0
             visible: root.showBackground
 
@@ -107,6 +108,7 @@ ColumnLayout {
             anchors.rightMargin: Tokens.padding.normal
             anchors.bottomMargin: Tokens.spacing.small
             spacing: Tokens.spacing.small
+            layer.enabled: true
             opacity: root.expanded ? 1.0 : 0.0
 
             Behavior on opacity {

@@ -13,6 +13,7 @@ StyledListView {
     readonly property bool lyricsActuallyVisible: LyricsService.lyricsVisible && LyricsService.model.count != 0
 
     clip: true
+    reuseItems: true
     model: LyricsService.model
     currentIndex: LyricsService.currentIndex
     visible: lyricsActuallyVisible || hideTimer.running

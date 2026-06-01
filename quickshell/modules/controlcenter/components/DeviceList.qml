@@ -81,5 +81,6 @@ ColumnLayout {
         spacing: Tokens.spacing.small / 2
         interactive: false
         clip: false
+        reuseItems: true
     }
 }

@@ -104,6 +104,7 @@ Item {
 
         radius: Tokens.rounding.normal
         color: Colours.tPalette.m3surface
+        layer.enabled: true
         opacity: root.session.network.showPasswordDialog && !root.isClosing ? 1 : 0
         scale: root.session.network.showPasswordDialog && !root.isClosing ? 1 : 0.7
         Keys.onEscapePressed: closeDialog()

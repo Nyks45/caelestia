@@ -29,6 +29,7 @@ Item {
 
         currentIndex: root.dashState.currentTab
         background: null
+        clip: true
 
         onCurrentIndexChanged: root.dashState.currentTab = currentIndex
 

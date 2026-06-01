@@ -64,6 +64,7 @@ ScrollBar {
         }
         radius: Tokens.rounding.full
         color: Colours.palette.m3secondary
+        layer.enabled: true
 
         MouseArea {
             id: mouse
