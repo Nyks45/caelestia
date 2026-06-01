@@ -28,6 +28,7 @@ Item {
     property real sidebarLerp
 
     visible: offsetScale < 1
+    layer.enabled: offsetScale > 0
     anchors.bottomMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight + content.anchors.margins * 2
     implicitWidth: sidebar.width * (1 - sidebar.offsetScale) * horizontalStretch * sidebarLerp + Tokens.sizes.utilities.width * (1 - sidebarLerp)

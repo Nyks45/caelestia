@@ -40,6 +40,7 @@ Item {
     }
 
     visible: offsetScale < 1
+    layer.enabled: offsetScale > 0
     anchors.rightMargin: (-implicitWidth - 5 - sidebarOffset) * offsetScale
     implicitWidth: content.implicitWidth
     implicitHeight: content.implicitHeight

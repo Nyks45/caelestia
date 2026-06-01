@@ -67,6 +67,8 @@ ColumnLayout {
             readonly property bool isConnecting: root.connectingToSsid === modelData.ssid
             readonly property bool loading: networkItem.isConnecting
 
+            layer.enabled: true
+
             visible: root.view === "wireless"
             Layout.preferredHeight: visible ? implicitHeight : 0
             Layout.fillWidth: true
@@ -249,6 +251,8 @@ ColumnLayout {
 
             required property var modelData
             readonly property bool loading: false
+
+            layer.enabled: true
 
             visible: root.view === "ethernet"
             Layout.preferredHeight: visible ? implicitHeight : 0

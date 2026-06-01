@@ -14,6 +14,7 @@ Item {
     property real offsetScale: shouldBeActive ? 0 : 1
 
     visible: offsetScale < 1
+    layer.enabled: offsetScale > 0
     anchors.rightMargin: (-implicitWidth - 5) * offsetScale
     implicitWidth: Tokens.sizes.sidebar.width
     opacity: 1 - offsetScale

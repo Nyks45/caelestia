@@ -32,6 +32,7 @@ Item {
     }
 
     visible: offsetScale < 1
+    layer.enabled: offsetScale > 0
     anchors.bottomMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight
     implicitWidth: content.implicitWidth || 630 // Hard coded fallback for first open

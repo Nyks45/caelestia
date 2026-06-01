@@ -129,6 +129,8 @@ Item {
         sidebar: sidebar
         popouts: popoutsWrapper.content
 
+        z: 1
+
         anchors.bottom: parent.bottom
         anchors.right: parent.right
     }
@@ -136,7 +138,7 @@ Item {
     Toasts.Toasts {
         id: toasts
 
-        anchors.bottom: sidebar.visible ? parent.bottom : utilities.top
+        anchors.bottom: sidebar.visible ? parent.bottom : (utilities.visible ? utilities.top : parent.bottom)
         anchors.right: sidebar.left
         anchors.margins: Tokens.padding.normal
     }
@@ -147,7 +149,7 @@ Item {
         visibilities: root.visibilities
 
         anchors.top: notifications.bottom
-        anchors.bottom: utilities.top
+        anchors.bottom: parent.bottom
         anchors.right: parent.right
     }
 }
